@@ -1,3 +1,5 @@
+const cartRoutes = require("./cart.routes");
+const paymentRoutes = require("./payment.routes");
 const productsRoutes = require("./products.routes");
 const sessionRoutes = require("./session.routes");
 const usersRoutes = require("./users.routes");
@@ -10,5 +12,9 @@ protectedRoutes.use("/session", sessionRoutes);
 protectedRoutes.use("/users", usersRoutes);
 // products routes
 protectedRoutes.use("/products", productsRoutes);
+// cart routes
+protectedRoutes.use("/cart", cartRoutes);
+// payment management
+protectedRoutes.use("/payment", paymentRoutes);
 
 module.exports = protectedRoutes;

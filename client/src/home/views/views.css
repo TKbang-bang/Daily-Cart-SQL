@@ -1,6 +1,10 @@
+.home,
+._cart {
+  margin-top: 7rem;
+}
+
 .home {
   .prev {
-    margin-top: 7rem;
     width: 100%;
     height: 25rem;
     position: relative;

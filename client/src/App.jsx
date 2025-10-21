@@ -6,6 +6,8 @@ import Signup from "./Auth/Signup";
 import { Toaster } from "sonner";
 import { sessionCheck } from "./services/session.service";
 import Display from "./home/Display.jsx";
+import Success from "./home/Success.jsx";
+import Failure from "./home/Failure.jsx";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = `${import.meta.env.VITE_SERVER_URL}`;
@@ -37,6 +39,8 @@ function App() {
     <>
       <Routes>
         <Route path="*" element={<Display />} />
+        <Route path="/payment/success/:orderId" element={<Success />} />
+        <Route path="/payment/failure/:orderId" element={<Failure />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>

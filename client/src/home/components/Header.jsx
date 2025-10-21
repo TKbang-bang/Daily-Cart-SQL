@@ -1,13 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Cart, MenuBars, Search, XClose } from "../../utils/SVG";
 import "./components.css";
+import { toast } from "sonner";
+import { gettingCartCount } from "../../services/products.service";
 
 function Header() {
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const getCartCount = async () => {
+      try {
+        const res = await gettingCartCount();
+        if (!res.ok) throw new Error(res.message);
+
+        setCartCount(res.count);
+      } catch (error) {
+        return toast.error(error.message);
+      }
+    };
+
+    getCartCount();
+  }, []);
+
   return (
     <header>
       <div className="up">
-        <Link to={"/"} className="logo">
+        <Link to={"/products"} className="logo">
           <h1>DailyMarket</h1>
         </Link>
 
@@ -51,9 +70,9 @@ function Header() {
             </li>
           </ul>
 
-          <Link to={"/cart"} className="cart">
+          <Link to={"/cart/current"} className="cart">
             <Cart />
-            <span className="count">0</span>
+            <span className="count">{cartCount}</span>
           </Link>
         </nav>
       </div>

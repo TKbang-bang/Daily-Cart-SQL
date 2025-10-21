@@ -251,24 +251,6 @@ const getProductById = async (userId, productId) => {
       tags: product.tags.map((tag) => tag.name),
       inCart: Number(product.get("inCart")) > 0,
     };
-    // const product = await Product.findByPk(id, {
-    //   include: [
-    //     { model: Category, attributes: ["name"], as: "category" },
-    //     { model: Tag, attributes: ["name"], as: "tags" },
-    //   ],
-    // });
-
-    // return {
-    //   id: product.id,
-    //   name: product.name,
-    //   description: product.description,
-    //   price: product.price,
-    //   discount: product.discount,
-    //   stock: product.stock,
-    //   image: product.image,
-    //   category: product.category?.name || null,
-    //   tags: product.tags.map((tag) => tag.name),
-    // };
   } catch (error) {
     throw error;
   }
@@ -393,6 +375,15 @@ const AddOrRemoveToCart = async (userId, productId) => {
   }
 };
 
+const countingCart = async (userId) => {
+  try {
+    const cart = await Cart.count({ where: { userId } });
+    return cart;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   creatingProduct,
   gettingProducts,
@@ -402,4 +393,5 @@ module.exports = {
   gettingProductsCategories,
   gettingProductsByCategory,
   AddOrRemoveToCart,
+  countingCart,
 };

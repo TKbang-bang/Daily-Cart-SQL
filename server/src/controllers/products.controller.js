@@ -8,6 +8,7 @@ const {
   gettingProductsCategories,
   gettingProductsByCategory,
   AddOrRemoveToCart,
+  countingCart,
 } = require("../services/products.service");
 const { getUserById } = require("../services/user.service");
 
@@ -149,6 +150,15 @@ const cartManagement = async (req, res, next) => {
   }
 };
 
+const countCart = async (req, res, next) => {
+  try {
+    const count = await countingCart(req.userId);
+    return res.status(200).json({ count });
+  } catch (error) {
+    return next(new ServerError(error.message, 500));
+  }
+};
+
 module.exports = {
   createProduct,
   getProducts,
@@ -158,4 +168,5 @@ module.exports = {
   getProductsCategories,
   getPorductsByCategory,
   cartManagement,
+  countCart,
 };

@@ -51,7 +51,6 @@ function Product({ product }) {
         <button className="to_cart" onClick={handleCart}>
           {inCart ? "Remove from cart" : "Add to cart"}
         </button>
-        <button className="now">Buy now</button>
       </div>
     </article>
   );
