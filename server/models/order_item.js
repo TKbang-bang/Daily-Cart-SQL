@@ -19,6 +19,15 @@ module.exports = (sequelize, DataTypes) => {
         as: "product",
       });
     }
+
+    toJSON() {
+      const values = { ...this.get() };
+      delete values.orderId;
+      delete values.productId;
+      delete values.createdAt;
+      delete values.updatedAt;
+      return values;
+    }
   }
   Order_item.init(
     {

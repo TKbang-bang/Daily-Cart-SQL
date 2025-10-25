@@ -15,15 +15,18 @@ const cartProducts = async (req, res, next) => {
     return next(new ServerError(error.message, 500));
   }
 };
+
 const purchasingProducts = async (req, res, next) => {
   try {
     const products = await getPurchasingCartProducts(req.userId);
 
     return res.status(200).json({ products });
   } catch (error) {
+    console.log(error);
     return next(new ServerError(error.message, 500));
   }
 };
+
 const purchasedProducts = async (req, res, next) => {
   try {
     const products = await getPurchasedCartProducts(req.userId);

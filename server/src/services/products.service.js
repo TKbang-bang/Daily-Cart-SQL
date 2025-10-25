@@ -185,7 +185,7 @@ const gettingProducts = async (userId) => {
         "image",
         [
           sequelize.literal(
-            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}')`
+            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}' AND "Carts"."status" = 'active')`
           ),
           "inCart",
         ],
@@ -228,7 +228,7 @@ const getProductById = async (userId, productId) => {
         "image",
         [
           sequelize.literal(
-            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}')`
+            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}' AND "Carts"."status" = 'active')`
           ),
           "inCart",
         ],
@@ -276,7 +276,7 @@ const searchingProduct = async (userId, word) => {
         "image",
         [
           sequelize.literal(
-            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}')`
+            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}') AND "Carts"."status" = 'active'`
           ),
           "inCart",
         ],
@@ -333,7 +333,7 @@ const gettingProductsByCategory = async (userId, category) => {
         "image",
         [
           sequelize.literal(
-            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}')`
+            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}') AND "Carts"."status" = 'active'`
           ),
           "inCart",
         ],
@@ -377,7 +377,7 @@ const AddOrRemoveToCart = async (userId, productId) => {
 
 const countingCart = async (userId) => {
   try {
-    const cart = await Cart.count({ where: { userId } });
+    const cart = await Cart.count({ where: { userId, status: "active" } });
     return cart;
   } catch (error) {
     throw error;

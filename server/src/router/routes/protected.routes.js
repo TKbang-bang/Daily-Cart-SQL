@@ -1,4 +1,5 @@
 const cartRoutes = require("./cart.routes");
+const ordersRoutes = require("./orders.routes");
 const paymentRoutes = require("./payment.routes");
 const productsRoutes = require("./products.routes");
 const sessionRoutes = require("./session.routes");
@@ -16,5 +17,7 @@ protectedRoutes.use("/products", productsRoutes);
 protectedRoutes.use("/cart", cartRoutes);
 // payment management
 protectedRoutes.use("/payment", paymentRoutes);
+// orders routes
+protectedRoutes.use("/orders", ordersRoutes);
 
 module.exports = protectedRoutes;

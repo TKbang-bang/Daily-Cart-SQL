@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { Product, Cart, Order, Order_item, sequelize } = require("../../models");
 
 const getCurrentCartProducts = async (userId) => {
@@ -25,21 +26,44 @@ const getCurrentCartProducts = async (userId) => {
 
 const getPurchasingCartProducts = async (userId) => {
   try {
-    const products = await Cart.findAll({
-      where: { userId, status: "purchasing" },
-      include: [{ model: Product, as: "product" }],
+    const orders = await Order.findAll({
+      include: [
+        {
+          model: Order_item,
+          as: "items",
+          include: [
+            {
+              model: Product,
+              as: "product",
+              attributes: [
+                "id",
+                "name",
+                "description",
+                "price",
+                "discount",
+                "stock",
+                "image",
+              ],
+            },
+          ],
+        },
+      ],
+      where: {
+        userId,
+        [Op.or]: [{ status: "paid" }, { status: "shipped" }],
+      },
     });
 
-    return products.map((product) => {
-      return {
-        id: product.product.id,
-        name: product.product.name,
-        description: product.product.description,
-        price: product.product.price,
-        discount: product.product.discount,
-        stock: product.product.stock,
-        image: product.product.image,
-      };
+    return orders.flatMap((order) => {
+      return order.items.map((item) => ({
+        id: item.product.id,
+        name: item.product.name,
+        description: item.product.description,
+        price: item.product.price,
+        discount: item.product.discount,
+        stock: item.product.stock,
+        image: item.product.image,
+      }));
     });
   } catch (error) {
     throw error;
@@ -48,21 +72,44 @@ const getPurchasingCartProducts = async (userId) => {
 
 const getPurchasedCartProducts = async (userId) => {
   try {
-    const products = await Cart.findAll({
-      where: { userId, status: "purchased" },
-      include: [{ model: Product, as: "product" }],
+    const orders = await Order.findAll({
+      include: [
+        {
+          model: Order_item,
+          as: "items",
+          include: [
+            {
+              model: Product,
+              as: "product",
+              attributes: [
+                "id",
+                "name",
+                "description",
+                "price",
+                "discount",
+                "stock",
+                "image",
+              ],
+            },
+          ],
+        },
+      ],
+      where: {
+        userId,
+        status: "delivered",
+      },
     });
 
-    return products.map((product) => {
-      return {
-        id: product.product.id,
-        name: product.product.name,
-        description: product.product.description,
-        price: product.product.price,
-        discount: product.product.discount,
-        stock: product.product.stock,
-        image: product.product.image,
-      };
+    return orders.flatMap((order) => {
+      return order.items.map((item) => ({
+        id: item.product.id,
+        name: item.product.name,
+        description: item.product.description,
+        price: item.product.price,
+        discount: item.product.discount,
+        stock: item.product.stock,
+        image: item.product.image,
+      }));
     });
   } catch (error) {
     throw error;

@@ -19,6 +19,14 @@ module.exports = (sequelize, DataTypes) => {
         as: "items",
       });
     }
+
+    toJSON() {
+      const values = { ...this.get() };
+      delete values.userId;
+      delete values.createdAt;
+      delete values.updatedAt;
+      return values;
+    }
   }
   Order.init(
     {

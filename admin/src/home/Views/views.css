@@ -224,3 +224,25 @@
     }
   }
 }
+
+.orders_links {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 0.5rem;
+  list-style-type: none;
+
+  & a {
+    text-decoration: none;
+    color: var(--blue);
+    padding: 0.3rem 1rem;
+    border-radius: 5rem;
+
+    &.active {
+      background-color: var(--blue);
+      color: #fff;
+    }
+  }
+}
