@@ -1,4 +1,4 @@
-const { User } = require("../../models");
+const { User, Log } = require("../../models");
 
 const getUserByEmail = async (email) => {
   try {
@@ -22,4 +22,24 @@ const getUserById = async (id) => {
   }
 };
 
-module.exports = { getUserByEmail, getUserById };
+const gettingUsers = async () => {
+  try {
+    return await User.findAll({
+      where: {
+        role: "moderator",
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+const gettingLogs = async () => {
+  try {
+    return await Log.findAll();
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { getUserByEmail, getUserById, gettingUsers, gettingLogs };

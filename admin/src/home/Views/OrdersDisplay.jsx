@@ -16,8 +16,11 @@ function OrdersDisplay() {
         </li>
       </ul>
       <Routes>
-        <Route path="/paid" element={<Orders url={"/orders/paid"} />} />
-        <Route path="/shipped" element={<Orders url={"/orders/shipped"} />} />
+        <Route path="/paid" element={<Orders url={"/orders/private/paid"} />} />
+        <Route
+          path="/shipped"
+          element={<Orders url={"/orders/private/shipped"} />}
+        />
       </Routes>
     </section>
   );

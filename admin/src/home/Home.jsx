@@ -5,6 +5,8 @@ import CreateProducts from "./Views/CreateProducts";
 import ProductsContainer from "./Views/ProductsContainer";
 import Edit from "./Views/Edit";
 import OrdersDisplay from "./Views/OrdersDisplay";
+import Users from "./Views/components/Users";
+import Logs from "./Views/Logs";
 
 function Home() {
   return (
@@ -16,8 +18,7 @@ function Home() {
         <Route path="/edit/:id" element={<Edit />} />
         <Route path="/create" element={<CreateProducts />} />
         <Route path="/orders/*" element={<OrdersDisplay />} />
-        <Route path="/users" element={<h1>Users</h1>} />
-        <Route path="/logs" element={<h1>Logs</h1>} />
+        <Route path="/managers" element={<Users />} />
       </Routes>
     </div>
   );

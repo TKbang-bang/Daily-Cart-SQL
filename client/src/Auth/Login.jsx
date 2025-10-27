@@ -24,7 +24,8 @@ function Login() {
       setPassword("");
 
       toast.success(res.message);
-      return navigate("/");
+      navigate("/");
+      return window.location.reload();
     } catch (error) {
       return toast.error(error.message);
     }

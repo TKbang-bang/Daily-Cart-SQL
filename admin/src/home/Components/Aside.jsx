@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   CreateIcon,
@@ -11,9 +11,11 @@ import {
 import "./components.css";
 import { toast } from "sonner";
 import { logout } from "../../services/session.service";
+import { UserContext } from "../Display";
 
 function Aside() {
   const navigate = useNavigate();
+  const user = useContext(UserContext);
 
   const handleLogout = async () => {
     try {
@@ -68,23 +70,16 @@ function Aside() {
           </NavLink>
         </li>
 
-        <li>
-          <NavLink to={"/users"}>
-            <span>
-              <UsersIcon />
-            </span>
-            <p>Users</p>
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink to={"/logs"}>
-            <span>
-              <LogsIcon />
-            </span>
-            <p>Logs</p>
-          </NavLink>
-        </li>
+        {user.role == "admin" && (
+          <li>
+            <NavLink to={"/managers"}>
+              <span>
+                <UsersIcon />
+              </span>
+              <p>Managers</p>
+            </NavLink>
+          </li>
+        )}
       </ul>
 
       <button className="logout" onClick={handleLogout}>

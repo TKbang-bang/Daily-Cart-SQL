@@ -18,6 +18,6 @@ protectedRoutes.use("/cart", cartRoutes);
 // payment management
 protectedRoutes.use("/payment", paymentRoutes);
 // orders routes
-protectedRoutes.use("/orders", ordersRoutes);
+protectedRoutes.use("/orders/private", ordersRoutes);
 
 module.exports = protectedRoutes;

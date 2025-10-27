@@ -16,7 +16,7 @@ export const gettingOrders = async (url) => {
 
 export const updateOrder = async (userId) => {
   try {
-    const res = await api.put(`/orders/${userId}`);
+    const res = await api.put(`/orders/private/${userId}`);
     if (res.status != 200) return { ok: false, message: res.data.message };
 
     return { ok: true, message: res.data.message };

@@ -17,6 +17,7 @@ const logout = async (req, res, next) => {
   try {
     req.userId = null;
 
+    // clearing cookies
     res.clearCookie("refreshToken", {
       httpOnly: true,
       sameSite: "lax",

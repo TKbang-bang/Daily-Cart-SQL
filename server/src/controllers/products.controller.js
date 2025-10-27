@@ -27,12 +27,13 @@ const createProduct = async (req, res, next) => {
         new ServerError("You are not allowed to create a product", 403)
       );
 
+    // creating product
     await creatingProduct({
       name,
       description,
       category,
-      price,
-      stock,
+      price: parseFloat(price),
+      stock: parseInt(stock),
       tags: JSON.parse(tags),
       filename,
       userId: req.userId,
@@ -40,7 +41,6 @@ const createProduct = async (req, res, next) => {
 
     return res.status(200).json({ message: "Product created" });
   } catch (error) {
-    console.log(error);
     return next(new ServerError(error.message, 500));
   }
 };
@@ -66,9 +66,9 @@ const UpdateProduct = async (req, res, next) => {
       name,
       description,
       category,
-      price,
-      discount,
-      stock,
+      price: parseFloat(price),
+      discount: parseFloat(discount),
+      stock: parseInt(stock),
       tags,
       userId: req.userId,
     });
@@ -77,13 +77,13 @@ const UpdateProduct = async (req, res, next) => {
 
     return res.status(200).json({ message: "Product updated" });
   } catch (error) {
-    console.log(error);
     return next(new ServerError(error.message, 500));
   }
 };
 
 const getProducts = async (req, res, next) => {
   try {
+    // getting products
     const products = await gettingProducts(req.userId);
 
     return res.status(200).json({ products });
@@ -94,8 +94,10 @@ const getProducts = async (req, res, next) => {
 
 const getProduct = async (req, res, next) => {
   try {
+    // product id from the url
     const { id } = req.params;
 
+    // getting product
     const product = await getProductById(req.userId, id);
 
     return res.status(200).json({ product });
@@ -106,6 +108,7 @@ const getProduct = async (req, res, next) => {
 
 const getProductsCategories = async (req, res, next) => {
   try {
+    // getting categories
     const categories = await gettingProductsCategories();
 
     return res.status(200).json({ categories });
@@ -116,8 +119,10 @@ const getProductsCategories = async (req, res, next) => {
 
 const getPorductsByCategory = async (req, res, next) => {
   try {
+    // category from the url
     const { category } = req.params;
 
+    // getting products
     const products = await gettingProductsByCategory(req.userId, category);
 
     return res.status(200).json({ products });
@@ -128,8 +133,10 @@ const getPorductsByCategory = async (req, res, next) => {
 
 const searchProduct = async (req, res, next) => {
   try {
+    // word searched from the url
     const { word } = req.params;
 
+    // getting products
     const products = await searchingProduct(req.userId, word);
 
     return res.status(200).json({ products });
@@ -140,8 +147,10 @@ const searchProduct = async (req, res, next) => {
 
 const cartManagement = async (req, res, next) => {
   try {
+    // product id from the url
     const { id } = req.params;
 
+    // adding or removing a product in cart
     const addOrRemove = await AddOrRemoveToCart(req.userId, id);
 
     return res.status(200).json({ added: addOrRemove.created });
@@ -152,6 +161,7 @@ const cartManagement = async (req, res, next) => {
 
 const countCart = async (req, res, next) => {
   try {
+    // counting cart products
     const count = await countingCart(req.userId);
     return res.status(200).json({ count });
   } catch (error) {

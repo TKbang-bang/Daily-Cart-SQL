@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { theCartThing } from "../../services/products.service";
 
 function Product({ product }) {
-  const [inCart, setInCart] = useState(product.inCart);
+  const [inCart, setInCart] = useState(product.inCart == 1);
 
   const handleCart = async () => {
     try {

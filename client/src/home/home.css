@@ -1,6 +1,8 @@
-.payment {
+.payment,
+.plus {
   width: 100vw;
   height: 100vh;
+  /* margin-top: 7rem; */
   display: flex;
   justify-content: center;
   align-items: center;

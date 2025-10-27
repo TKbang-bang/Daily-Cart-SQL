@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, Route, Routes } from "react-router-dom";
+import { NavLink, Route, Routes, useNavigate } from "react-router-dom";
 import "./views.css";
 import Products from "../components/Products";
 import { toast } from "sonner";
@@ -7,7 +7,8 @@ import { gettingCategories } from "../../services/products.service";
 
 function Home() {
   const [categories, setCategories] = useState([]);
-  const [theUrl, setTheUrl] = useState("/products");
+  const [theUrl, setTheUrl] = useState("/products/categories/all");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getCategories = async () => {
@@ -22,6 +23,7 @@ function Home() {
     };
 
     getCategories();
+    navigate(theUrl);
   }, []);
 
   return (
@@ -45,7 +47,10 @@ function Home() {
 
       <ul className="_categories">
         <li>
-          <NavLink to="/products" onClick={() => setTheUrl("/products")}>
+          <NavLink
+            to="/products/categories/all"
+            onClick={() => setTheUrl("/products")}
+          >
             All
           </NavLink>
         </li>

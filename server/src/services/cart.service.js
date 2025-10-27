@@ -1,13 +1,22 @@
 const { Op } = require("sequelize");
-const { Product, Cart, Order, Order_item, sequelize } = require("../../models");
+const {
+  Product,
+  Cart,
+  Order,
+  Order_item,
+  sequelize,
+  Log,
+} = require("../../models");
 
 const getCurrentCartProducts = async (userId) => {
   try {
+    // getting products
     const products = await Cart.findAll({
       where: { userId, status: "active" },
       include: [{ model: Product, as: "product" }],
     });
 
+    // formatting products
     return products.map((product) => {
       return {
         id: product.product.id,
@@ -26,6 +35,7 @@ const getCurrentCartProducts = async (userId) => {
 
 const getPurchasingCartProducts = async (userId) => {
   try {
+    // getting orders with items
     const orders = await Order.findAll({
       include: [
         {
@@ -54,6 +64,7 @@ const getPurchasingCartProducts = async (userId) => {
       },
     });
 
+    // formatting products
     return orders.flatMap((order) => {
       return order.items.map((item) => ({
         id: item.product.id,
@@ -72,6 +83,7 @@ const getPurchasingCartProducts = async (userId) => {
 
 const getPurchasedCartProducts = async (userId) => {
   try {
+    // getting orders with items
     const orders = await Order.findAll({
       include: [
         {
@@ -100,6 +112,7 @@ const getPurchasedCartProducts = async (userId) => {
       },
     });
 
+    // formatting products
     return orders.flatMap((order) => {
       return order.items.map((item) => ({
         id: item.product.id,
@@ -118,21 +131,16 @@ const getPurchasedCartProducts = async (userId) => {
 
 const deletingCartProduct = async (userId, productId) => {
   try {
+    // deleting product
     await Cart.destroy({ where: { userId, productId } });
   } catch (error) {
     throw error;
   }
 };
 
-// const buyFromCart = async (userId, productId) => {
-//   try {
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-
 const creatingOrder = async (userId, productId) => {
   try {
+    // creating full order
     const fullOrder = await sequelize.transaction(async (transaction) => {
       // getting the product
       const product = await Product.findByPk(productId, {
@@ -171,6 +179,14 @@ const creatingOrder = async (userId, productId) => {
         { transaction }
       );
 
+      await Log.create(
+        {
+          userId,
+          message: `Order created with id ${order.id}`,
+        },
+        { transaction }
+      );
+
       // order id
       return order.id;
     });
@@ -183,6 +199,7 @@ const creatingOrder = async (userId, productId) => {
 
 const addPaymentIdToOrder = async (orderId, paymentId) => {
   try {
+    // updating the order
     await Order.update({ paymentId }, { where: { id: orderId } });
   } catch (error) {
     throw error;
@@ -191,6 +208,7 @@ const addPaymentIdToOrder = async (orderId, paymentId) => {
 
 const successPayment = async (userId, orderId) => {
   try {
+    // updating the order and product and cart status
     await sequelize.transaction(async (transaction) => {
       // updating the order status
       await Order.update(
@@ -217,6 +235,15 @@ const successPayment = async (userId, orderId) => {
         where: { id: productId.productId },
         transaction,
       });
+
+      // creating log
+      await Log.create(
+        {
+          userId,
+          message: `Order with id ${orderId} has been paid`,
+        },
+        { transaction }
+      );
     });
   } catch (error) {
     throw error;
@@ -225,6 +252,7 @@ const successPayment = async (userId, orderId) => {
 
 const cancellingOrder = async (userId, orderId) => {
   try {
+    // updating the order and product and cart status
     await sequelize.transaction(async (transaction) => {
       // cancelling the order
       await Order.update(
@@ -244,6 +272,15 @@ const cancellingOrder = async (userId, orderId) => {
       await Cart.update(
         { status: "active" },
         { where: { userId, productId: productId.productId }, transaction }
+      );
+
+      // creating log
+      await Log.create(
+        {
+          userId,
+          message: `Order with id ${orderId} has been cancelled`,
+        },
+        { transaction }
       );
     });
   } catch (error) {

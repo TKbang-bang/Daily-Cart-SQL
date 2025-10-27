@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Cart, MenuBars, Search, XClose } from "../../utils/SVG";
 import "./components.css";
 import { toast } from "sonner";
 import { gettingCartCount } from "../../services/products.service";
+import { logout } from "../../services/session.service";
 
 function Header() {
   const [cartCount, setCartCount] = useState(0);
+  const navigate = useNavigate();
+  const [searchWord, setSearchWord] = useState("");
 
   useEffect(() => {
     const getCartCount = async () => {
@@ -23,10 +26,30 @@ function Header() {
     getCartCount();
   }, []);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    if (!searchWord) return toast.error("The search field can not be empty");
+
+    return navigate(`/search/${searchWord}`);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const res = await logout();
+      if (!res.ok) throw new Error(res.message);
+
+      navigate("/login");
+      return window.location.reload();
+    } catch (error) {
+      return toast.error(error.message);
+    }
+  };
+
   return (
     <header>
       <div className="up">
-        <Link to={"/products"} className="logo">
+        <Link to={"/products/categories/all"} className="logo">
           <h1>DailyMarket</h1>
         </Link>
 
@@ -60,13 +83,16 @@ function Header() {
         <nav className="nav">
           <ul className="menu">
             <li>
-              <NavLink to={"/products"}>Home</NavLink>
+              <NavLink to={"/products/categories/all"}>Home</NavLink>
             </li>
             <li>
               <NavLink to={"/about"}>About us</NavLink>
             </li>
             <li>
               <NavLink to={"/contact"}>Contact</NavLink>
+            </li>
+            <li className="out">
+              <button onClick={handleLogout}>Log Out</button>
             </li>
           </ul>
 
@@ -77,8 +103,13 @@ function Header() {
         </nav>
       </div>
       <article className="search">
-        <form>
-          <input type="text" placeholder="Search..." />
+        <form onSubmit={handleSearch}>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchWord}
+            onChange={(e) => setSearchWord(e.target.value)}
+          />
           <button type="submit">
             <Search />
           </button>

@@ -54,8 +54,10 @@ const createPaymentSession = async (req, res, next) => {
 
 const successPaymentSession = async (req, res, next) => {
   try {
+    // order id from the url
     const { orderId } = req.params;
 
+    // success payment
     await successPayment(req.userId, orderId);
 
     return res.status(200).json({ message: "Payment successful" });
@@ -66,8 +68,10 @@ const successPaymentSession = async (req, res, next) => {
 
 const cancelOrder = async (req, res, next) => {
   try {
+    // order id from the url
     const { orderId } = req.params;
 
+    // cancelling order
     await cancellingOrder(req.userId, orderId);
 
     return res.status(200).json({ message: "Order cancelled" });

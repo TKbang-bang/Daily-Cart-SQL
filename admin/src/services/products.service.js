@@ -20,7 +20,7 @@ export const createProduct = async (
     formData.append("tags", JSON.stringify(allTags));
     formData.append("image", file);
 
-    const res = await api.post("/products", formData);
+    const res = await api.post("/products/private", formData);
     if (res.status != 200) return { ok: false, message: res.data.message };
 
     return { ok: true, message: res.data.message };
@@ -73,7 +73,7 @@ export const updateProduct = async (
   try {
     const allTags = tags.split(",").map((tag) => tag.trim());
 
-    const res = await api.put(`/products/${id}`, {
+    const res = await api.put(`/products/private/${id}`, {
       name,
       description,
       category,

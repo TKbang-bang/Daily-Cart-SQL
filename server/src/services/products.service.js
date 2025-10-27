@@ -19,9 +19,10 @@ const creatingProduct = async ({
   userId,
 }) => {
   try {
+    // starting transaction
     await sequelize.transaction(async (transaction) => {
       let categoryId;
-      // creating category
+      // creating/getting category
       const getCategory = await Category.findOne({
         where: {
           name: { [Op.iLike]: category },
@@ -29,14 +30,17 @@ const creatingProduct = async ({
         transaction,
       });
       if (!getCategory) {
+        // creating new category
         const newCategory = await Category.create(
           { name: category },
           {
             transaction,
           }
         );
+        // assigning category id
         categoryId = newCategory.id;
       } else {
+        // assigning category id
         categoryId = getCategory.id;
       }
 
@@ -62,9 +66,11 @@ const creatingProduct = async ({
           transaction,
         });
 
+        // adding tags
         await product.addTag(tag, { transaction });
       }
 
+      // creating log
       await Log.create({
         userId,
         action: "created a product",
@@ -154,6 +160,7 @@ const updatingProduct = async ({
           transaction,
         });
 
+        // adding tags
         await product.addTag(tag, { transaction });
       }
 
@@ -174,6 +181,7 @@ const updatingProduct = async ({
 
 const gettingProducts = async (userId) => {
   try {
+    // getting products
     const products = await Product.findAll({
       attributes: [
         "id",
@@ -183,6 +191,7 @@ const gettingProducts = async (userId) => {
         "discount",
         "stock",
         "image",
+        // count if the product is in the user cart
         [
           sequelize.literal(
             `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}' AND "Carts"."status" = 'active')`
@@ -196,6 +205,7 @@ const gettingProducts = async (userId) => {
       ],
     });
 
+    // formatting products
     const formattedProducts = products.map((product) => ({
       id: product.id,
       name: product.name,
@@ -206,7 +216,7 @@ const gettingProducts = async (userId) => {
       image: product.image,
       category: product.category?.name || null,
       tags: product.tags.map((tag) => tag.name),
-      inCart: Number(product.get("inCart")) > 0,
+      inCart: parseInt(product.get("inCart")) > 0,
     }));
 
     return formattedProducts;
@@ -217,6 +227,7 @@ const gettingProducts = async (userId) => {
 
 const getProductById = async (userId, productId) => {
   try {
+    // getting the product by id
     const product = await Product.findByPk(productId, {
       attributes: [
         "id",
@@ -226,6 +237,7 @@ const getProductById = async (userId, productId) => {
         "discount",
         "stock",
         "image",
+        // count if the product is in the user cart
         [
           sequelize.literal(
             `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}' AND "Carts"."status" = 'active')`
@@ -239,6 +251,7 @@ const getProductById = async (userId, productId) => {
       ],
     });
 
+    // formatting the product
     return {
       id: product.id,
       name: product.name,
@@ -258,6 +271,7 @@ const getProductById = async (userId, productId) => {
 
 const searchingProduct = async (userId, word) => {
   try {
+    // getting products
     const products = await Product.findAll({
       where: {
         [Op.or]: [
@@ -274,9 +288,10 @@ const searchingProduct = async (userId, word) => {
         "discount",
         "stock",
         "image",
+        // count if the product is in the user cart
         [
           sequelize.literal(
-            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}') AND "Carts"."status" = 'active'`
+            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}' AND "Carts"."status" = 'active')`
           ),
           "inCart",
         ],
@@ -288,6 +303,7 @@ const searchingProduct = async (userId, word) => {
       distinct: true,
     });
 
+    // formatting products
     return products.map((product) => ({
       id: product.id,
       name: product.name,
@@ -307,6 +323,7 @@ const searchingProduct = async (userId, word) => {
 
 const gettingProductsCategories = async () => {
   try {
+    // categories
     const categories = await Category.findAll();
 
     return categories;
@@ -317,6 +334,30 @@ const gettingProductsCategories = async () => {
 
 const gettingProductsByCategory = async (userId, category) => {
   try {
+    // getting products
+    if (category === "all")
+      // getting all products
+      return await Product.findAll({
+        attributes: [
+          "id",
+          "name",
+          "description",
+          "price",
+          "discount",
+          "stock",
+          "image",
+          // count if the product is in the user cart
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}' AND "Carts"."status" = 'active')`
+            ),
+            "inCart",
+          ],
+        ],
+        include: [{ model: Category, as: "category", attributes: ["name"] }],
+      });
+
+    // getting products by category
     const products = await Product.findAll({
       where: {
         "$category.name$": {
@@ -331,9 +372,10 @@ const gettingProductsByCategory = async (userId, category) => {
         "discount",
         "stock",
         "image",
+        // count if the product is in the user cart
         [
           sequelize.literal(
-            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}') AND "Carts"."status" = 'active'`
+            `(SELECT COUNT(*) FROM "Carts" WHERE "Carts"."productId" = "Product"."id" AND "Carts"."userId" = '${userId}' AND "Carts"."status" = 'active')`
           ),
           "inCart",
         ],
@@ -341,6 +383,7 @@ const gettingProductsByCategory = async (userId, category) => {
       include: [{ model: Category, as: "category", attributes: ["name"] }],
     });
 
+    // formatting products
     return products.map((product) => ({
       id: product.id,
       name: product.name,
@@ -350,7 +393,7 @@ const gettingProductsByCategory = async (userId, category) => {
       stock: product.stock,
       image: product.image,
       category: product.category?.name || null,
-      inCart: Number(product.get("inCart")) > 0,
+      inCart: parseInt(product.get("inCart")) > 0,
     }));
   } catch (error) {
     throw error;
@@ -359,14 +402,17 @@ const gettingProductsByCategory = async (userId, category) => {
 
 const AddOrRemoveToCart = async (userId, productId) => {
   try {
+    // checking if the product is in the user cart
     const existing = await Cart.findOne({
       where: { userId, productId },
     });
 
     if (!existing) {
+      // adding product to cart
       await Cart.create({ userId, productId });
       return { created: true };
     } else {
+      // removing product from cart
       await Cart.destroy({ where: { userId, productId } });
       return { created: false };
     }
@@ -377,6 +423,7 @@ const AddOrRemoveToCart = async (userId, productId) => {
 
 const countingCart = async (userId) => {
   try {
+    // counting cart products
     const cart = await Cart.count({ where: { userId, status: "active" } });
     return cart;
   } catch (error) {

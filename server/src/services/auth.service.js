@@ -20,6 +20,7 @@ const signingUp = async (
     )
       return { ok: false, message: "code is not valid", status: 400 };
 
+    // creating user
     const user = await User.create({
       firstname: firstName,
       lastname: lastName,
@@ -37,6 +38,7 @@ const signingUp = async (
 
 const commonSigningUp = async (firstname, lastname, email, password) => {
   try {
+    // creating user
     const user = await User.create({ firstname, lastname, email, password });
 
     return user.id;

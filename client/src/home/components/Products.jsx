@@ -14,6 +14,7 @@ function Products({ url }) {
         if (!res.ok) throw new Error(res.message);
 
         setProducts(res.products);
+        console.log(res);
       } catch (error) {
         return toast.error(error.message);
       }
@@ -29,7 +30,7 @@ function Products({ url }) {
           <Product key={product.id} product={product} />
         ))
       ) : (
-        <h1>Loading...</h1>
+        <h1>No results...</h1>
       )}
     </section>
   );
