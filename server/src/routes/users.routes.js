@@ -2,7 +2,7 @@ const {
   getMe,
   getManagers,
   getLogs,
-} = require("../../controllers/users.controller");
+} = require("../controllers/users.controller");
 
 const usersRoutes = require("express").Router();
 

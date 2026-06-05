@@ -1,7 +1,4 @@
-const {
-  sessionCheck,
-  logout,
-} = require("../../controllers/session.controller");
+const { sessionCheck, logout } = require("../controllers/session.controller");
 
 const sessionRoutes = require("express").Router();
 

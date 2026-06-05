@@ -12,6 +12,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
   const [code, setCode] = useState("");
+  const [role, setRole] = useState("moderator");
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
   const fileRef = useRef(null);
@@ -26,7 +27,8 @@ function Signup() {
         password,
         confPassword,
         code,
-        file
+        role,
+        file,
       );
 
       if (!sign.ok) throw new Error(sign.message);
@@ -67,7 +69,8 @@ function Signup() {
                 </span>
                 <span
                   onClick={() => (
-                    setFile(null), (document.getElementById("file").value = "")
+                    setFile(null),
+                    (document.getElementById("file").value = "")
                   )}
                   className="delete"
                 >
@@ -96,7 +99,7 @@ function Signup() {
                 onChange={(e) =>
                   setFirstName(
                     e.target.value.charAt(0).toUpperCase() +
-                      e.target.value.slice(1)
+                      e.target.value.slice(1),
                   )
                 }
               />
@@ -111,7 +114,7 @@ function Signup() {
                 onChange={(e) =>
                   setLastName(
                     e.target.value.charAt(0).toUpperCase() +
-                      e.target.value.slice(1)
+                      e.target.value.slice(1),
                   )
                 }
               />
@@ -158,6 +161,19 @@ function Signup() {
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
+          </article>
+
+          <article className="feild_container">
+            <label htmlFor="role">Role</label>
+            <select
+              name="role"
+              id="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="moderator">Moderator</option>
+              <option value="admin">Admin</option>
+            </select>
           </article>
 
           <button type="submit" className="submit">

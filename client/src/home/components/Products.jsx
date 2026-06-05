@@ -14,7 +14,6 @@ function Products({ url }) {
         if (!res.ok) throw new Error(res.message);
 
         setProducts(res.products);
-        console.log(res);
       } catch (error) {
         return toast.error(error.message);
       }

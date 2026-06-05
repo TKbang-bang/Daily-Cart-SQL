@@ -9,12 +9,13 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
+  const [role, setRole] = useState("moderator");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await login(email, password, code);
+      const res = await login(email, password, code, role);
       if (!res.ok) throw new Error(res.message);
 
       toast.success(res.message);
@@ -59,6 +60,19 @@ function Login() {
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
+          </article>
+
+          <article className="feild_container">
+            <label htmlFor="role">Role</label>
+            <select
+              name="role"
+              id="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="moderator">Moderator</option>
+              <option value="admin">Admin</option>
+            </select>
           </article>
 
           <button type="submit" className="submit">

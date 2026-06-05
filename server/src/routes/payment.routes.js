@@ -2,7 +2,7 @@ const {
   createPaymentSession,
   successPaymentSession,
   cancelOrder,
-} = require("../../controllers/payment.controller");
+} = require("../controllers/payment.controller");
 
 const paymentRoutes = require("express").Router();
 

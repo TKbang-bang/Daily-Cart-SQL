@@ -8,8 +8,8 @@ const {
   getPorductsByCategory,
   cartManagement,
   countCart,
-} = require("../../controllers/products.controller");
-const { productsUpload } = require("../../utils/multer");
+} = require("../controllers/products.controller");
+const { productsUpload } = require("../utils/multer");
 
 const productsRoutes = require("express").Router();
 
@@ -17,7 +17,7 @@ const productsRoutes = require("express").Router();
 productsRoutes.post(
   "/private",
   productsUpload().single("image"),
-  createProduct
+  createProduct,
 );
 // updating product
 productsRoutes.put("/private/:id", UpdateProduct);

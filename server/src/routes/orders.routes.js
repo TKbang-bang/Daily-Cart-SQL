@@ -1,7 +1,7 @@
 const {
   getOrders,
   updateOrderStatus,
-} = require("../../controllers/orders.controller");
+} = require("../controllers/orders.controller");
 
 const ordersRoutes = require("express").Router();
 

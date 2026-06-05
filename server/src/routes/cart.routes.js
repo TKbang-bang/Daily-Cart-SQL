@@ -5,7 +5,7 @@ const {
   purchasingProducts,
   purchasedProducts,
   deleteProduct,
-} = require("../../controllers/cart.controller");
+} = require("../controllers/cart.controller");
 
 // getting current cart
 cartRoutes.get("/current", cartProducts);

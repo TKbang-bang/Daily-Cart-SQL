@@ -1,6 +1,6 @@
-const sessionMiddleware = require("../middlewares/session");
+const sessionMiddleware = require("./middlewares/session");
 const authRoutes = require("./routes/auth.routes");
-const protectedRoutes = require("./routes/protected.routes");
+const protectedRoutes = require("./protected.routes");
 
 const router = require("express").Router();
 

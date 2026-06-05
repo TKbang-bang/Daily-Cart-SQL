@@ -8,7 +8,8 @@ export const signup = async (
   password,
   confPassword,
   code,
-  file
+  role,
+  file,
 ) => {
   try {
     // check if all fields are filled
@@ -19,6 +20,7 @@ export const signup = async (
       !password ||
       !confPassword ||
       !code ||
+      !role ||
       !file
     )
       return { ok: false, message: "All fields are required" };
@@ -34,6 +36,7 @@ export const signup = async (
     formData.append("email", email);
     formData.append("password", password);
     formData.append("code", code);
+    formData.append("role", role);
     formData.append("image", file);
 
     // sending the request
@@ -56,10 +59,10 @@ export const signup = async (
   }
 };
 
-export const login = async (email, password, code) => {
+export const login = async (email, password, code, role) => {
   try {
     // check if all fields are filled
-    if (!email || !password || !code)
+    if (!email || !password || !code || !role)
       return { ok: false, message: "All fields are required" };
 
     // sending the request
@@ -67,6 +70,7 @@ export const login = async (email, password, code) => {
       email,
       password,
       code,
+      role,
     });
     if (res.status != 200) return { ok: false, message: res.data.message };
 
