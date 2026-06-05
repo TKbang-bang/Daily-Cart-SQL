@@ -13,7 +13,7 @@ const getMe = async (req, res, next) => {
 
     return res.status(200).json({ user });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -32,7 +32,7 @@ const getManagers = async (req, res, next) => {
 
     return res.status(200).json({ users });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -51,7 +51,7 @@ const getLogs = async (req, res, next) => {
 
     return res.status(200).json({ logs });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 

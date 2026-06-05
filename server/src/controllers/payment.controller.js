@@ -17,6 +17,8 @@ const createPaymentSession = async (req, res, next) => {
     const product = await getProductById(req.userId, productId);
     if (!product) return next(new ServerError("Product not found", 404));
 
+    console.log({ product });
+
     if (product.stock < 1)
       return next(new ServerError("Product out of stock", 400));
 
@@ -31,7 +33,7 @@ const createPaymentSession = async (req, res, next) => {
             currency: "usd",
             product_data: {
               name: product.name,
-              description: product.description,
+              description: product.description || "No description provided",
             },
             unit_amount: (product.price - (product.discount || 0)) * 100,
           },
@@ -48,7 +50,8 @@ const createPaymentSession = async (req, res, next) => {
 
     return res.status(200).json({ url: session.url });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    console.log(error);
+    return next(error);
   }
 };
 
@@ -62,7 +65,7 @@ const successPaymentSession = async (req, res, next) => {
 
     return res.status(200).json({ message: "Payment successful" });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -76,7 +79,7 @@ const cancelOrder = async (req, res, next) => {
 
     return res.status(200).json({ message: "Order cancelled" });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 

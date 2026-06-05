@@ -24,7 +24,7 @@ const createProduct = async (req, res, next) => {
     if (!user) return next(new ServerError("User not found", 404));
     if (user.role != "admin" && user.role != "moderator")
       return next(
-        new ServerError("You are not allowed to create a product", 403)
+        new ServerError("You are not allowed to create a product", 403),
       );
 
     // creating product
@@ -41,7 +41,7 @@ const createProduct = async (req, res, next) => {
 
     return res.status(200).json({ message: "Product created" });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -57,7 +57,7 @@ const UpdateProduct = async (req, res, next) => {
     if (!user) return next(new ServerError("User not found", 404));
     if (user.role != "admin" && user.role != "moderator")
       return next(
-        new ServerError("You are not allowed to update a product", 403)
+        new ServerError("You are not allowed to update a product", 403),
       );
 
     // updating product
@@ -77,7 +77,7 @@ const UpdateProduct = async (req, res, next) => {
 
     return res.status(200).json({ message: "Product updated" });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -88,7 +88,7 @@ const getProducts = async (req, res, next) => {
 
     return res.status(200).json({ products });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -102,7 +102,7 @@ const getProduct = async (req, res, next) => {
 
     return res.status(200).json({ product });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -113,7 +113,7 @@ const getProductsCategories = async (req, res, next) => {
 
     return res.status(200).json({ categories });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -127,7 +127,7 @@ const getPorductsByCategory = async (req, res, next) => {
 
     return res.status(200).json({ products });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -141,7 +141,7 @@ const searchProduct = async (req, res, next) => {
 
     return res.status(200).json({ products });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -155,7 +155,7 @@ const cartManagement = async (req, res, next) => {
 
     return res.status(200).json({ added: addOrRemove.created });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -165,7 +165,7 @@ const countCart = async (req, res, next) => {
     const count = await countingCart(req.userId);
     return res.status(200).json({ count });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 

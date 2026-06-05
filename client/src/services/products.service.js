@@ -69,6 +69,7 @@ export const buyProduct = async (id) => {
 
     return { ok: true, url: res.data.url };
   } catch (error) {
+    // console.log(error);
     return {
       ok: false,
       message: error.response?.data?.message || error.message,

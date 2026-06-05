@@ -9,7 +9,7 @@ const sessionCheck = async (req, res, next) => {
 
     return res.status(200).json({ message: "Be a good user" });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -26,7 +26,7 @@ const logout = async (req, res, next) => {
 
     return res.status(204).end();
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 

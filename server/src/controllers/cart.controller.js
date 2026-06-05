@@ -13,7 +13,7 @@ const cartProducts = async (req, res, next) => {
 
     return res.status(200).json({ products });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -24,7 +24,7 @@ const purchasingProducts = async (req, res, next) => {
 
     return res.status(200).json({ products });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -35,7 +35,7 @@ const purchasedProducts = async (req, res, next) => {
 
     return res.status(200).json({ products });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -46,7 +46,7 @@ const deleteProduct = async (req, res, next) => {
 
     return res.status(204).end();
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 

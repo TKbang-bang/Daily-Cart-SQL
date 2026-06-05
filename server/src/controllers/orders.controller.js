@@ -24,7 +24,7 @@ const getOrders = async (req, res, next) => {
 
     return res.status(200).json({ orders });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 
@@ -46,7 +46,7 @@ const updateOrderStatus = async (req, res, next) => {
 
     return res.status(200).json({ message: "Order status updated" });
   } catch (error) {
-    return next(new ServerError(error.message, 500));
+    return next(error);
   }
 };
 

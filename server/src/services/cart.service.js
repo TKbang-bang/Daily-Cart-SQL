@@ -155,7 +155,7 @@ const creatingOrder = async (userId, productId) => {
       // updating the product status in cart
       await Cart.update(
         { status: "purchasing" },
-        { where: { userId, productId }, transaction }
+        { where: { userId, productId }, transaction },
       );
 
       // creating order
@@ -164,7 +164,7 @@ const creatingOrder = async (userId, productId) => {
           userId,
           total: product.price - (product.discount || 0),
         },
-        { transaction }
+        { transaction },
       );
 
       // items in order
@@ -176,15 +176,16 @@ const creatingOrder = async (userId, productId) => {
           price: product.price,
           discount: product.discount,
         },
-        { transaction }
+        { transaction },
       );
 
       await Log.create(
         {
           userId,
           message: `Order created with id ${order.id}`,
+          action: "Order created",
         },
-        { transaction }
+        { transaction },
       );
 
       // order id
@@ -213,7 +214,7 @@ const successPayment = async (userId, orderId) => {
       // updating the order status
       await Order.update(
         { status: "paid" },
-        { where: { id: orderId, userId }, transaction }
+        { where: { id: orderId, userId }, transaction },
       );
       // getting the product id
       const productId = await Order_item.findOne({
@@ -226,7 +227,7 @@ const successPayment = async (userId, orderId) => {
       // updating the product status in cart
       await Cart.update(
         { status: "purchased" },
-        { where: { userId, productId: productId.productId }, transaction }
+        { where: { userId, productId: productId.productId }, transaction },
       );
 
       // update product stock
@@ -242,7 +243,7 @@ const successPayment = async (userId, orderId) => {
           userId,
           message: `Order with id ${orderId} has been paid`,
         },
-        { transaction }
+        { transaction },
       );
     });
   } catch (error) {
@@ -257,7 +258,7 @@ const cancellingOrder = async (userId, orderId) => {
       // cancelling the order
       await Order.update(
         { status: "cancelled" },
-        { where: { id: orderId, userId }, transaction }
+        { where: { id: orderId, userId }, transaction },
       );
 
       // getting the product id
@@ -271,7 +272,7 @@ const cancellingOrder = async (userId, orderId) => {
       // updating the product status in cart
       await Cart.update(
         { status: "active" },
-        { where: { userId, productId: productId.productId }, transaction }
+        { where: { userId, productId: productId.productId }, transaction },
       );
 
       // creating log
@@ -280,7 +281,7 @@ const cancellingOrder = async (userId, orderId) => {
           userId,
           message: `Order with id ${orderId} has been cancelled`,
         },
-        { transaction }
+        { transaction },
       );
     });
   } catch (error) {
