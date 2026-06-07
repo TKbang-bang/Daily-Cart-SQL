@@ -2,8 +2,8 @@ import axios from "axios";
 import { setAccessToken } from "./token.service";
 
 export const signup = async (
-  firstName,
-  lastName,
+  firstname,
+  lastname,
   email,
   password,
   confPassword,
@@ -14,8 +14,8 @@ export const signup = async (
   try {
     // check if all fields are filled
     if (
-      !firstName ||
-      !lastName ||
+      !firstname ||
+      !lastname ||
       !email ||
       !password ||
       !confPassword ||
@@ -31,27 +31,24 @@ export const signup = async (
 
     // creating form data with all the data
     const formData = new FormData();
-    formData.append("firstName", firstName);
-    formData.append("lastName", lastName);
+    formData.append("firstname", firstname);
+    formData.append("lastname", lastname);
     formData.append("email", email);
     formData.append("password", password);
     formData.append("code", code);
     formData.append("role", role);
     formData.append("image", file);
 
-    // sending the request
     const res = await axios.post("/auth/private/signup", formData);
+    if (res.status != 201) return { ok: false, message: res.data.message };
 
-    // checking if the request was successful
-    if (res.status != 200) return { ok: false, message: res.data.message };
+    console.log(res);
 
     // setting the token
-    setAccessToken(res.data.accessToken);
+    setAccessToken(res.headers["access-token"]);
 
-    // if the request was successful
     return { ok: true, message: res.data.message || "User created" };
   } catch (error) {
-    // if the request failed
     return {
       ok: false,
       message: error.response?.data?.message || error.message,

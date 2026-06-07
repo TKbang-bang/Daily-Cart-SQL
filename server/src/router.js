@@ -1,12 +1,8 @@
-const sessionMiddleware = require("./middlewares/session");
-const authRoutes = require("./routes/auth.routes");
-const protectedRoutes = require("./protected.routes");
+import { Router } from "express";
+import authRoutes from "./auth/auth.routes.js";
 
-const router = require("express").Router();
+const router = Router();
 
-// auth routes
 router.use("/auth", authRoutes);
-// protected routes
-router.use("/protected", sessionMiddleware, protectedRoutes);
 
-module.exports = router;
+export default router;

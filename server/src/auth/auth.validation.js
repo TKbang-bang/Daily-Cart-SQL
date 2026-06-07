@@ -1,16 +1,16 @@
-const ServerError = require("../../Errors/errorClas");
+import ServerError from "../errors/server.error.js";
 
-const nameValidation = (firstName, lastName) => {
-  if (!firstName || !lastName)
+const nameValidation = (firstname, lastname) => {
+  if (!firstname || !lastname)
     return { ok: false, message: "first and last name are required" };
 
-  if (firstName.length < 2 || lastName.length < 2)
+  if (firstname.length < 2 || lastname.length < 2)
     return {
       ok: false,
       message: "first and last name must be at least 2 characters long",
     };
 
-  if (firstName.length > 25 || lastName.length > 25)
+  if (firstname.length > 25 || lastname.length > 25)
     return {
       ok: false,
       message: "first and last name must be at most 25 characters long",
@@ -60,11 +60,11 @@ const passwordValidation = (password) => {
   return { ok: true };
 };
 
-const signupValidation = (req, res, next) => {
-  const { firstName, lastName, email, password } = req.body;
+export const signupValidation = (req, res, next) => {
+  const { firstname, lastname, email, password } = req.body;
 
   // check if first and last name are valid
-  const nameValidationResult = nameValidation(firstName, lastName);
+  const nameValidationResult = nameValidation(firstname, lastname);
   if (!nameValidationResult.ok)
     return next(new ServerError(nameValidationResult.message, 400));
 
@@ -80,5 +80,3 @@ const signupValidation = (req, res, next) => {
 
   return next();
 };
-
-module.exports = { signupValidation };

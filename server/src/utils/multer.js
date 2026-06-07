@@ -1,5 +1,9 @@
-const multer = require("multer");
-const path = require("path");
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const fileFilter = (req, file, cb) => {
   const isImage = file.mimetype.startsWith("image/");
@@ -29,7 +33,5 @@ const createUploader = (folder) => {
   });
 };
 
-const profileUpload = () => createUploader("profiles");
-const productsUpload = () => createUploader("products");
-
-module.exports = { profileUpload, productsUpload };
+export const profileUpload = () => createUploader("profiles");
+export const productsUpload = () => createUploader("products");
