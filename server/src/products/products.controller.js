@@ -1,6 +1,8 @@
 import {
   createProductsService,
+  getProductService,
   getProductsService,
+  updateProductsService,
 } from "./products.service.js";
 
 export const createProductsController = async (req, res, next) => {
@@ -33,6 +35,44 @@ export const getProductsController = async (req, res, next) => {
     const products = await getProductsService(userID);
 
     return res.status(200).json({ products });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const getProductController = async (req, res, next) => {
+  try {
+    const { userID } = req;
+    const { id } = req.params;
+
+    const product = await getProductService(id, userID);
+
+    return res.status(200).json({ product });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const updateProductsController = async (req, res, next) => {
+  try {
+    const { userID } = req;
+    const { id } = req.params;
+    const { name, description, category, price, discount, stock, tags } =
+      req.body;
+
+    await updateProductsService(
+      id,
+      name,
+      description,
+      category,
+      Number(price),
+      Number(discount),
+      Number(stock),
+      tags,
+      userID,
+    );
+
+    return res.status(200).json({ message: "Product updated" });
   } catch (error) {
     return next(error);
   }

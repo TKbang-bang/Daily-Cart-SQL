@@ -2,7 +2,9 @@ import { Router } from "express";
 import { productsUpload } from "../utils/multer.js";
 import {
   createProductsController,
+  getProductController,
   getProductsController,
+  updateProductsController,
 } from "./products.controller.js";
 const productsRoutes = Router();
 
@@ -15,13 +17,14 @@ productsRoutes.post(
 // // getting products
 productsRoutes.get("/", getProductsController);
 // updating product
-// productsRoutes.put("/private/:id", UpdateProduct);
+productsRoutes.put("/:id", updateProductsController);
+// // getting product
+productsRoutes.get("/:id", getProductController);
+
 // // getting categories
 // productsRoutes.get("/categories", getProductsCategories);
 // // getting products by category
 // productsRoutes.get("/categories/:category", getPorductsByCategory);
-// // getting product
-// productsRoutes.get("/:id", getProduct);
 // // searching product
 // productsRoutes.get("/search/:word", searchProduct);
 // // counting cart products

@@ -94,11 +94,18 @@ export const createProductsService = async (
       }
     }
 
+    // creating logs
+    await client.query(
+      `INSERT INTO logs (user_id, action) VALUES ($1, $2) RETURNING *`,
+      [userID, `create product with id ${product[0].id}`],
+    );
+
     await client.query("COMMIT");
-    return;
   } catch (error) {
     await client.query("ROLLBACK");
-    throw new ServerError(error.message, 500);
+
+    if (error instanceof ServerError) throw error;
+    throw new ServerError("Internal server error", 500);
   } finally {
     await client.release();
   }
@@ -138,4 +145,162 @@ export const getProductsService = async (userID) => {
   );
 
   return products;
+};
+
+export const getProductService = async (id, userID) => {
+  const { rows: product } = await pool.query(
+    `
+        WITH oneProduct AS (
+            SELECT
+                p.*,
+                c.name AS category,
+                ARRAY_AGG(t.name) AS tags
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN products_tags pt ON p.id = pt.product_id
+            LEFT JOIN tags t ON pt.tag_id = t.id
+            WHERE p.id = $2
+            GROUP BY p.id, c.name
+        ),
+        myCart AS (
+            SELECT
+                ci.product_id
+            FROM cart_items ci
+            JOIN cart c ON ci.cart_id = c.id
+            WHERE c.user_id = $1
+        )
+
+        SELECT
+            op.*,
+            CASE
+                WHEN op.id IN (SELECT product_id FROM myCart) THEN true
+                ELSE false
+            END AS in_cart
+        FROM oneProduct op
+    `,
+    [userID, id],
+  );
+
+  return product[0];
+};
+
+export const updateProductsService = async (
+  id,
+  name,
+  description,
+  category,
+  price,
+  discount,
+  stock,
+  tags,
+  userID,
+) => {
+  // sanitization
+  const capitalizedCategory =
+    category.charAt(0).toUpperCase() + category.slice(1);
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    // check if the user is a staff member
+    const { rows: staffUser } = await client.query(
+      "SELECT 1 FROM staff_members WHERE user_id = $1 LIMIT 1",
+      [userID],
+    );
+    if (staffUser.length === 0)
+      throw new ServerError("You are not allowed", 401);
+
+    // check if discount is between 0 and 100
+    if (discount < 0 || discount > 100)
+      throw new ServerError("Invalid discount", 400);
+    const discountVal = discount > 0 ? discount : null;
+
+    // check if category exists
+    const { rows: categoryExists } = await client.query(
+      `SELECT * FROM categories WHERE name = $1`,
+      [capitalizedCategory],
+    );
+    let catID = 0;
+    if (categoryExists.length === 0) {
+      const { rows: newCategory } = await client.query(
+        `INSERT INTO categories (name, slug) VALUES ($1, $2) RETURNING *`,
+        [
+          capitalizedCategory,
+          capitalizedCategory.replace(/\s+/g, "-").toLowerCase(),
+        ],
+      );
+      catID = newCategory[0].id;
+    } else {
+      catID = categoryExists[0].id;
+    }
+
+    // check if the product exists
+    const { rows: productExists } = await client.query(
+      `SELECT * FROM products WHERE id = $1`,
+      [id],
+    );
+    if (productExists.length === 0)
+      throw new ServerError("Product not found", 404);
+
+    // update product
+    await client.query(
+      `
+        UPDATE products
+            SET name = $1,
+            description = $2,
+            category_id = $3,
+            price = $4,
+            discount_percent = $5,
+            stock = $6,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $7
+      `,
+      [name, description, catID, price, discountVal, stock, id],
+    );
+
+    // delete old tags
+    await client.query(`DELETE FROM products_tags WHERE product_id = $1`, [id]);
+
+    // add new tags
+    for (let tagName of tags) {
+      const { rows: uTag } = await client.query(
+        `SELECT * FROM tags WHERE name = $1`,
+        [tagName],
+      );
+
+      if (uTag.length === 0) {
+        const { rows: newTag } = await client.query(
+          `INSERT INTO tags (name, slug) VALUES ($1, $2) RETURNING *`,
+          [tagName, tagName.replace(/\s+/g, "-").toLowerCase()],
+        );
+
+        await client.query(
+          `INSERT INTO products_tags (product_id, tag_id) VALUES ($1, $2)`,
+          [id, newTag[0].id],
+        );
+      } else {
+        await client.query(
+          `INSERT INTO products_tags (product_id, tag_id) VALUES ($1, $2)`,
+          [id, uTag[0].id],
+        );
+      }
+    }
+
+    // creating logs
+    await client.query(`INSERT INTO logs (user_id, action) VALUES ($1, $2)`, [
+      userID,
+      `Updated product with id ${id}`,
+    ]);
+
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+
+    console.log(error);
+    if (error instanceof ServerError) throw error;
+    throw new ServerError("Internal server error", 500);
+  } finally {
+    await client.release();
+  }
 };

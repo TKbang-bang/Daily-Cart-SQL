@@ -64,8 +64,10 @@ export const privateSignupService = async (
 
     return user[0];
   } catch (error) {
-    client.query("ROLLBACK");
-    throw new ServerError(error.message, 500);
+    await client.query("ROLLBACK");
+
+    if (error instanceof ServerError) throw error;
+    throw new ServerError("Internal server error", 500);
   } finally {
     client.release();
   }

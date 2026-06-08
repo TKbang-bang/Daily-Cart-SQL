@@ -73,7 +73,7 @@ export const updateProduct = async (
   try {
     const allTags = tags.split(",").map((tag) => tag.trim());
 
-    const res = await api.put(`/products/private/${id}`, {
+    const res = await api.put(`/products/${id}`, {
       name,
       description,
       category,
