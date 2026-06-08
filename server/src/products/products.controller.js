@@ -1,5 +1,8 @@
 import {
   createProductsService,
+  getCategoriesService,
+  getProductsByAllCategoriesService,
+  getProductsByCategoryService,
   getProductService,
   getProductsService,
   updateProductsService,
@@ -73,6 +76,34 @@ export const updateProductsController = async (req, res, next) => {
     );
 
     return res.status(200).json({ message: "Product updated" });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const getCategoriesController = async (req, res, next) => {
+  try {
+    const categories = await getCategoriesService();
+
+    return res.status(200).json({ categories });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const getPorductsByCategoryController = async (req, res, next) => {
+  try {
+    const { category } = req.params;
+    const { userID } = req;
+
+    let products;
+    if (category === "all") {
+      products = await getProductsByAllCategoriesService(userID);
+    } else {
+      products = await getProductsByCategoryService(category, userID);
+    }
+
+    return res.status(200).json({ products });
   } catch (error) {
     return next(error);
   }

@@ -50,7 +50,7 @@ export const theCartThing = async (id) => {
 
 export const gettingCartCount = async () => {
   try {
-    const res = await api.get("/products/cart/count");
+    const res = await api.get("/cart/count");
     if (res.status != 200) return { ok: false, message: res.data.message };
 
     return { ok: true, count: res.data.count };

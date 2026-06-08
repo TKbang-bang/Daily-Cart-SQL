@@ -304,3 +304,89 @@ export const updateProductsService = async (
     await client.release();
   }
 };
+
+export const getCategoriesService = async () => {
+  const { rows: categories } = await pool.query(`SELECT * FROM categories`);
+  return categories;
+};
+
+export const getProductsByAllCategoriesService = async (userID) => {
+  const { rows: products } = await pool.query(
+    `
+        WITH allProducts AS (
+            SELECT
+                p.*,
+                c.name AS category,
+                ARRAY_AGG(t.name) AS tags
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN products_tags pt ON p.id = pt.product_id
+            LEFT JOIN tags t ON pt.tag_id = t.id
+            GROUP BY p.id, c.name
+        ),
+        myCart AS (
+            SELECT
+                ci.product_id
+            FROM cart_items ci
+            JOIN cart c ON ci.cart_id = c.id
+            WHERE c.user_id = $1
+        )
+        SELECT
+            ap.*,
+            CASE
+                WHEN ap.id IN (SELECT product_id FROM myCart) THEN true
+                ELSE false
+            END AS in_cart
+        FROM allProducts ap
+    `,
+    [userID],
+  );
+
+  return products;
+};
+
+export const getProductsByCategoryService = async (category, userID) => {
+  // getting category id
+  const { rows: categoryByName } = await pool.query(
+    `SELECT id FROM categories WHERE name = $1 LIMIT 1`,
+    [category],
+  );
+  if (categoryByName.length === 0)
+    throw new ServerError("Category not found", 404);
+
+  const catID = categoryByName[0].id;
+
+  const { rows: products } = await pool.query(
+    `
+        WITH allProducts AS (
+            SELECT
+                p.*,
+                c.name AS category,
+                ARRAY_AGG(t.name) AS tags
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN products_tags pt ON p.id = pt.product_id
+            LEFT JOIN tags t ON pt.tag_id = t.id
+            WHERE p.category_id = $2
+            GROUP BY p.id, c.name
+        ),
+        myCart AS (
+            SELECT
+                ci.product_id
+            FROM cart_items ci
+            JOIN cart c ON ci.cart_id = c.id
+            WHERE c.user_id = $1
+        )
+        SELECT
+            ap.*,
+            CASE
+                WHEN ap.id IN (SELECT product_id FROM myCart) THEN true
+                ELSE false
+            END AS in_cart
+        FROM allProducts ap
+    `,
+    [userID, catID],
+  );
+
+  return products;
+};

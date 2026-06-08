@@ -2,6 +2,8 @@ import { Router } from "express";
 import { productsUpload } from "../utils/multer.js";
 import {
   createProductsController,
+  getCategoriesController,
+  getPorductsByCategoryController,
   getProductController,
   getProductsController,
   updateProductsController,
@@ -16,15 +18,15 @@ productsRoutes.post(
 );
 // // getting products
 productsRoutes.get("/", getProductsController);
-// updating product
-productsRoutes.put("/:id", updateProductsController);
+// // getting categories
+productsRoutes.get("/categories", getCategoriesController);
+// // getting products by category
+productsRoutes.get("/categories/:category", getPorductsByCategoryController);
 // // getting product
 productsRoutes.get("/:id", getProductController);
+// updating product
+productsRoutes.put("/:id", updateProductsController);
 
-// // getting categories
-// productsRoutes.get("/categories", getProductsCategories);
-// // getting products by category
-// productsRoutes.get("/categories/:category", getPorductsByCategory);
 // // searching product
 // productsRoutes.get("/search/:word", searchProduct);
 // // counting cart products
