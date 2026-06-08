@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import "./auth.css";
 import { signup } from "../services/auth.service";
@@ -10,7 +10,6 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,8 +32,7 @@ function Signup() {
       setConfirmPassword("");
 
       toast.success(res.message);
-      navigate("/");
-      return window.location.reload();
+      window.location.href = "/";
     } catch (error) {
       return toast.error(error.message);
     }
@@ -51,7 +49,7 @@ function Signup() {
           value={firstname}
           onChange={(e) =>
             setFirstname(
-              e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+              e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1),
             )
           }
         />
@@ -62,7 +60,7 @@ function Signup() {
           value={lastname}
           onChange={(e) =>
             setLastname(
-              e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+              e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1),
             )
           }
         />

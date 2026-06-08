@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./auth.css";
 import { login } from "../services/auth.service";
 import { toast } from "sonner";
@@ -10,7 +10,6 @@ function Login() {
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [role, setRole] = useState("moderator");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +18,7 @@ function Login() {
       if (!res.ok) throw new Error(res.message);
 
       toast.success(res.message);
-      navigate("/products");
+      window.location = "/products";
     } catch (error) {
       return toast.error(error.message);
     }

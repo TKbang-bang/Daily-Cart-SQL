@@ -42,8 +42,6 @@ export const signup = async (
     const res = await axios.post("/auth/private/signup", formData);
     if (res.status != 201) return { ok: false, message: res.data.message };
 
-    console.log(res);
-
     // setting the token
     setAccessToken(res.headers["access-token"]);
 
@@ -63,16 +61,16 @@ export const login = async (email, password, code, role) => {
       return { ok: false, message: "All fields are required" };
 
     // sending the request
-    const res = await axios.post("/auth/private/login", {
+    const res = await axios.post("/auth/private/signin", {
       email,
       password,
       code,
       role,
     });
-    if (res.status != 200) return { ok: false, message: res.data.message };
+    if (res.status != 201) return { ok: false, message: res.data.message };
 
     // setting the token
-    setAccessToken(res.data.accessToken);
+    setAccessToken(res.headers["access-token"]);
 
     // if the request was successful
     return { ok: true, message: res.data.message || "User logged in" };

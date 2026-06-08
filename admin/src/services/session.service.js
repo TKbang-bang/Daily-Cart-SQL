@@ -13,7 +13,8 @@ export const sessionCheck = async () => {
     });
     if (res.status != 200) return { ok: false, message: res.data.message };
 
-    setAccessToken(res.headers["access-token"].split(" ")[1]);
+    res.headers["access-token"] &&
+      setAccessToken(res.headers["access-token"].split(" ")[1]);
 
     return { ok: true, message: res.data.message };
   } catch (error) {
@@ -26,7 +27,7 @@ export const sessionCheck = async () => {
 
 export const logout = async () => {
   try {
-    const res = await api.get("/auth/logout");
+    const res = await axios.delete("/auth/logout");
     if (res.status != 204) return { ok: false, message: res.data.message };
 
     return { ok: true, message: "User logged out" };

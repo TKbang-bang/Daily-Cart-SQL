@@ -1,17 +1,17 @@
 import axios from "axios";
 import { setAccessToken } from "./token.service";
 
-export const signup = async (firstName, lastName, email, password) => {
+export const signup = async (firstname, lastname, email, password) => {
   try {
     const res = await axios.post("/auth/signup", {
-      firstName,
-      lastName,
+      firstname,
+      lastname,
       email,
       password,
     });
-    if (res.status != 200) return { ok: false, message: res.data.message };
+    if (res.status != 201) return { ok: false, message: res.data.message };
 
-    setAccessToken(res.data.accessToken);
+    setAccessToken(res.headers["access-token"]);
 
     return { ok: true, message: res.data.message || "Signup successful" };
   } catch (error) {
@@ -29,14 +29,14 @@ export const login = async (email, password) => {
       return { ok: false, message: "All fields are required" };
 
     // sending the request
-    const res = await axios.post("/auth/login", {
+    const res = await axios.post("/auth/signin", {
       email,
       password,
     });
-    if (res.status != 200) return { ok: false, message: res.data.message };
+    if (res.status != 201) return { ok: false, message: res.data.message };
 
     // setting the token
-    setAccessToken(res.data.accessToken);
+    setAccessToken(res.headers["access-token"]);
 
     // if the request was successful
     return { ok: true, message: res.data.message || "User logged in" };

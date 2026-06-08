@@ -12,13 +12,16 @@ export const privateSignupService = async (
   filename,
 ) => {
   // verifying if the user email is in db
-  const { rows: user } = await pool.query(
+  const { rows: userByEmail } = await pool.query(
     "SELECT * FROM users WHERE email = $1",
     [email],
   );
-  if (user.length > 0) throw new ServerError("Email already in use", 409);
+  if (userByEmail.length > 0)
+    throw new ServerError("Email already in use", 409);
 
   // check if the code and role are valid
+  if (!code || !role) throw new ServerError("Code and role are required", 409);
+
   if (role !== "manager" && role !== "admin")
     throw new ServerError("Invalid role", 409);
 
@@ -63,4 +66,30 @@ export const privateSignupService = async (
   } finally {
     client.release();
   }
+};
+
+export const privateSigninService = async (email, password, code, role) => {
+  // check if the email is in db
+  const { rows: user } = await pool.query(
+    "SELECT * FROM users WHERE email = $1",
+    [email],
+  );
+  if (user.length === 0) throw new ServerError("User not found", 404);
+
+  // check if the code and role are valid
+  if (!code || !role) throw new ServerError("Code and role are required", 409);
+
+  if (role !== "manager" && role !== "admin")
+    throw new ServerError("Invalid role", 409);
+
+  let isCodeOkay = false;
+  if (role == "manager" && code == process.env.MANAGER_CODE) isCodeOkay = true;
+  if (role == "admin" && code == process.env.ADMIN_CODE) isCodeOkay = true;
+  if (!isCodeOkay) throw new ServerError("Invalid code", 409);
+
+  // check if the password is correct
+  const isPasswordCorrect = await bcrypt.compare(password, user[0].password);
+  if (!isPasswordCorrect) throw new ServerError("Incorrect password", 401);
+
+  return user[0];
 };

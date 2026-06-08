@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./auth.css";
 import { signup } from "../services/auth.service";
 import { toast } from "sonner";
@@ -14,7 +14,6 @@ function Signup() {
   const [code, setCode] = useState("");
   const [role, setRole] = useState("moderator");
   const [file, setFile] = useState(null);
-  const navigate = useNavigate();
   const fileRef = useRef(null);
 
   const handleSubmit = async (e) => {

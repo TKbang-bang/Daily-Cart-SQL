@@ -5,7 +5,7 @@ import { getAccessToken, setAccessToken } from "./token.service";
 export const sessionCheck = async () => {
   try {
     const token = getAccessToken();
-    const res = await axios.get("/protected/session/check", {
+    const res = await axios.get("/auth/check", {
       withCredentials: true,
       headers: {
         Authorization: token && `Bearer ${token}`,
@@ -26,7 +26,7 @@ export const sessionCheck = async () => {
 
 export const logout = async () => {
   try {
-    const res = await api.get("/session/logout");
+    const res = await axios.delete("/auth/logout");
     if (res.status != 204) return { ok: false, message: res.data.message };
 
     return { ok: true, message: "User logged out" };
