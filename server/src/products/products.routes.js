@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { productsUpload } from "../utils/multer.js";
-import { createProductsController } from "./products.controller.js";
+import {
+  createProductsController,
+  getProductsController,
+} from "./products.controller.js";
 const productsRoutes = Router();
 
 // creating product
@@ -9,10 +12,10 @@ productsRoutes.post(
   productsUpload().single("image"),
   createProductsController,
 );
+// // getting products
+productsRoutes.get("/", getProductsController);
 // updating product
 // productsRoutes.put("/private/:id", UpdateProduct);
-// // getting products
-// productsRoutes.get("/", getProducts);
 // // getting categories
 // productsRoutes.get("/categories", getProductsCategories);
 // // getting products by category

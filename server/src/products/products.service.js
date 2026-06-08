@@ -103,3 +103,39 @@ export const createProductsService = async (
     await client.release();
   }
 };
+
+export const getProductsService = async (userID) => {
+  const { rows: products } = await pool.query(
+    `
+        WITH allProducts AS (
+            SELECT
+                p.*,
+                c.name AS category,
+                ARRAY_AGG(t.name) AS tags
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN products_tags pt ON p.id = pt.product_id
+            LEFT JOIN tags t ON pt.tag_id = t.id
+            GROUP BY p.id, c.name
+        ),
+        myCart AS (
+            SELECT
+                ci.product_id
+            FROM cart_items ci
+            JOIN cart c ON ci.cart_id = c.id
+            WHERE c.user_id = $1
+        )
+
+        SELECT
+            ap.*,
+            CASE
+                WHEN ap.id IN (SELECT product_id FROM myCart) THEN true
+                ELSE false
+            END AS in_cart
+        FROM allProducts ap
+    `,
+    [userID],
+  );
+
+  return products;
+};

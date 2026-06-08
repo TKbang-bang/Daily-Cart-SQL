@@ -101,3 +101,32 @@ CREATE TABLE IF NOT EXISTS logs (
         REFERENCES users(id)
         ON DELETE CASCADE
 );
+
+-- CART
+CREATE TABLE IF NOT EXISTS cart (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+-- CART ITEMS
+CREATE TABLE IF NOT EXISTS cart_items (
+    id BIGSERIAL PRIMARY KEY,
+    cart_id uuid NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity INTEGER NOT NULL,
+
+    FOREIGN KEY (cart_id)
+        REFERENCES cart(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (product_id)
+        REFERENCES products(id)
+        ON DELETE CASCADE,
+    CONSTRAINT cart_items_unique UNIQUE (cart_id, product_id),
+    CONSTRAINT cart_items_quantity_check CHECK(quantity > 0)
+);
