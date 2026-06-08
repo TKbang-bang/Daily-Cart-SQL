@@ -36,6 +36,9 @@ export const privateSignupService = async (
   // creating the user
   const client = await pool.connect();
   try {
+    // starting the transaction
+    await client.query("BEGIN");
+
     // user
     const { rows: user } = await client.query(
       `INSERT INTO users (
@@ -51,7 +54,7 @@ export const privateSignupService = async (
       `INSERT INTO staff_members (
             user_id,
             role,
-            picture
+            profile
         ) VALUES ($1, $2, $3)`,
       [user[0].id, role, filename],
     );

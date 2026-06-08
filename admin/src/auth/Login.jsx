@@ -9,7 +9,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
-  const [role, setRole] = useState("moderator");
+  const [role, setRole] = useState("manager");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,7 +69,7 @@ function Login() {
               value={role}
               onChange={(e) => setRole(e.target.value)}
             >
-              <option value="moderator">Moderator</option>
+              <option value="manager">Manager</option>
               <option value="admin">Admin</option>
             </select>
           </article>

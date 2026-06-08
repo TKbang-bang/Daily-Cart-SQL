@@ -12,7 +12,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
   const [code, setCode] = useState("");
-  const [role, setRole] = useState("moderator");
+  const [role, setRole] = useState("manager");
   const [file, setFile] = useState(null);
   const fileRef = useRef(null);
 
@@ -170,7 +170,7 @@ function Signup() {
               value={role}
               onChange={(e) => setRole(e.target.value)}
             >
-              <option value="moderator">Moderator</option>
+              <option value="manager">Manager</option>
               <option value="admin">Admin</option>
             </select>
           </article>

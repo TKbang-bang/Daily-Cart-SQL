@@ -31,3 +31,30 @@ export const getMeService = async (userID) => {
 
   return user[0];
 };
+
+export const getManagersService = async (userID) => {
+  // check if the user is admin
+  const { rows: staffUser } = await pool.query(
+    "SELECT * FROM staff_members WHERE user_id = $1",
+    [userID],
+  );
+  if (staffUser.length === 0) throw new ServerError("Member not found", 404);
+
+  if (staffUser[0].role !== "admin")
+    throw new ServerError("You are not allowed", 401);
+
+  // getting managers
+  const { rows: managers } = await pool.query(
+    `
+      SELECT
+          u.*,
+          sm.role,
+          sm.profile
+      FROM users u
+      JOIN staff_members sm ON u.id = sm.user_id
+      WHERE sm.role = 'manager'
+      `,
+  );
+
+  return managers;
+};
