@@ -7,7 +7,7 @@ export const createProduct = async (
   price,
   stock,
   tags,
-  file
+  file,
 ) => {
   try {
     const allTags = tags.split(",").map((tag) => tag.trim());
@@ -20,8 +20,8 @@ export const createProduct = async (
     formData.append("tags", JSON.stringify(allTags));
     formData.append("image", file);
 
-    const res = await api.post("/products/private", formData);
-    if (res.status != 200) return { ok: false, message: res.data.message };
+    const res = await api.post("/products/create", formData);
+    if (res.status != 201) return { ok: false, message: res.data.message };
 
     return { ok: true, message: res.data.message };
   } catch (error) {
@@ -68,7 +68,7 @@ export const updateProduct = async (
   price,
   discount,
   stock,
-  tags
+  tags,
 ) => {
   try {
     const allTags = tags.split(",").map((tag) => tag.trim());

@@ -31,10 +31,12 @@ function Users() {
                 src={`${import.meta.env.VITE_SERVER_URL}/profiles/${
                   user.profile
                 }`}
-                alt={user.name}
+                alt={`${user.firstname} ${user.lastname}`}
               />
               <div className="down">
-                <h3>{user.name}</h3>
+                <h3>
+                  {user.firstname} {user.lastname}
+                </h3>
               </div>
             </article>
           ))}

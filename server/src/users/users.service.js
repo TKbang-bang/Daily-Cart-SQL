@@ -58,3 +58,20 @@ export const getManagersService = async (userID) => {
 
   return managers;
 };
+
+export const getLogsService = async (userID) => {
+  // check if the user is admin
+  const { rows: staffUser } = await pool.query(
+    "SELECT * FROM staff_members WHERE user_id = $1",
+    [userID],
+  );
+  if (staffUser.length === 0) throw new ServerError("Member not found", 404);
+
+  if (staffUser[0].role !== "admin")
+    throw new ServerError("You are not allowed", 401);
+
+  // getting logs
+  const { rows: logs } = await pool.query(`SELECT * FROM logs`);
+
+  return logs;
+};

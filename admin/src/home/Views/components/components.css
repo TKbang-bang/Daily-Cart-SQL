@@ -84,7 +84,7 @@
 }
 
 ._user {
-  /* height: 100%; */
+  height: fit-content;
   width: 18rem;
   background: #fff;
   border-radius: 0.2rem 0.2rem 0.5rem 0.5rem;
@@ -109,6 +109,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
+    height: fit-content;
     gap: 0.5rem;
   }
 }

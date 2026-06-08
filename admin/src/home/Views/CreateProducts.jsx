@@ -28,7 +28,7 @@ function CreateProducts() {
         price,
         stock,
         tags,
-        file
+        file,
       );
       if (!res.ok) throw new Error(res.message);
 
@@ -56,7 +56,7 @@ function CreateProducts() {
             .replace(/[-_]/g, " ")
             .split(" ")
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ")
+            .join(" "),
         );
       }
     }
@@ -88,7 +88,8 @@ function CreateProducts() {
                 </span>
                 <span
                   onClick={() => (
-                    setFile(null), (document.getElementById("file").value = "")
+                    setFile(null),
+                    (document.getElementById("file").value = "")
                   )}
                   className="delete"
                 >
@@ -111,7 +112,8 @@ function CreateProducts() {
             value={name}
             onChange={(e) =>
               setName(
-                e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+                e.target.value.charAt(0).toUpperCase() +
+                  e.target.value.slice(1),
               )
             }
           />
@@ -122,7 +124,8 @@ function CreateProducts() {
             value={description}
             onChange={(e) =>
               setDescription(
-                e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+                e.target.value.charAt(0).toUpperCase() +
+                  e.target.value.slice(1),
               )
             }
           />
