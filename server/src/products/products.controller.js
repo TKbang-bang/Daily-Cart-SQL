@@ -5,6 +5,7 @@ import {
   getProductsByCategoryService,
   getProductService,
   getProductsService,
+  searchProductsService,
   updateProductsService,
 } from "./products.service.js";
 
@@ -102,6 +103,19 @@ export const getPorductsByCategoryController = async (req, res, next) => {
     } else {
       products = await getProductsByCategoryService(category, userID);
     }
+
+    return res.status(200).json({ products });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const searchProductsController = async (req, res, next) => {
+  try {
+    const { word } = req.params;
+    const { userID } = req;
+
+    const products = await searchProductsService(word, userID);
 
     return res.status(200).json({ products });
   } catch (error) {

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { theCartThing } from "../../services/products.service";
 
 function Product({ product }) {
-  const [inCart, setInCart] = useState(product.inCart == 1);
+  const [inCart, setInCart] = useState(product.in_cart);
 
   const handleCart = async () => {
     try {
@@ -12,10 +12,10 @@ function Product({ product }) {
       if (!res.ok) throw new Error(res.message);
 
       if (res.added) {
-        product.inCart = true;
+        product.in_cart = true;
         setInCart(true);
       } else {
-        product.inCart = false;
+        product.in_cart = false;
         setInCart(false);
       }
 

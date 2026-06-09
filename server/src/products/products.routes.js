@@ -6,6 +6,7 @@ import {
   getPorductsByCategoryController,
   getProductController,
   getProductsController,
+  searchProductsController,
   updateProductsController,
 } from "./products.controller.js";
 const productsRoutes = Router();
@@ -26,12 +27,7 @@ productsRoutes.get("/categories/:category", getPorductsByCategoryController);
 productsRoutes.get("/:id", getProductController);
 // updating product
 productsRoutes.put("/:id", updateProductsController);
-
 // // searching product
-// productsRoutes.get("/search/:word", searchProduct);
-// // counting cart products
-// productsRoutes.get("/cart/count", countCart);
-// // add/remove product to cart
-// productsRoutes.post("/cart/:id", cartManagement);
+productsRoutes.get("/search/:word", searchProductsController);
 
 export default productsRoutes;

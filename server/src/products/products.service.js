@@ -136,7 +136,7 @@ export const getProductsService = async (userID) => {
         SELECT
             ap.*,
             CASE
-                WHEN ap.id IN (SELECT product_id FROM myCart) THEN true
+                WHEN EXISTS (SELECT 1 FROM myCart mc WHERE mc.product_id = ap.id) THEN true
                 ELSE false
             END AS in_cart
         FROM allProducts ap
@@ -173,7 +173,7 @@ export const getProductService = async (id, userID) => {
         SELECT
             op.*,
             CASE
-                WHEN op.id IN (SELECT product_id FROM myCart) THEN true
+                WHEN EXISTS (SELECT 1 FROM myCart mc WHERE mc.product_id = op.id) THEN true
                 ELSE false
             END AS in_cart
         FROM oneProduct op
@@ -334,7 +334,7 @@ export const getProductsByAllCategoriesService = async (userID) => {
         SELECT
             ap.*,
             CASE
-                WHEN ap.id IN (SELECT product_id FROM myCart) THEN true
+                WHEN EXISTS (SELECT 1 FROM myCart mc WHERE mc.product_id = ap.id) THEN true
                 ELSE false
             END AS in_cart
         FROM allProducts ap
@@ -380,12 +380,57 @@ export const getProductsByCategoryService = async (category, userID) => {
         SELECT
             ap.*,
             CASE
-                WHEN ap.id IN (SELECT product_id FROM myCart) THEN true
+                WHEN EXISTS (SELECT 1 FROM myCart mc WHERE mc.product_id = ap.id) THEN true
                 ELSE false
             END AS in_cart
         FROM allProducts ap
     `,
     [userID, catID],
+  );
+
+  return products;
+};
+
+export const searchProductsService = async (word, userID) => {
+  const { rows: products } = await pool.query(
+    `
+      WITH allProducts AS (
+          SELECT
+              p.*,
+              c.name AS category,
+              ARRAY_AGG(t.name) AS tags
+          FROM products p
+          LEFT JOIN categories c ON p.category_id = c.id
+          LEFT JOIN products_tags pt ON p.id = pt.product_id
+          LEFT JOIN tags t ON pt.tag_id = t.id
+          WHERE
+            p.name ILIKE '%' || $2 || '%'
+            OR c.name ILIKE '%' || $2 || '%'
+            OR EXISTS (
+              SELECT 1
+              FROM products_tags pt
+              JOIN tags t ON pt.tag_id = t.id
+              WHERE pt.product_id = p.id
+              AND t.name ILIKE '%' || $2 || '%'
+            )
+          GROUP BY p.id, c.name
+      ),
+      myCart AS (
+          SELECT
+              ci.product_id
+          FROM cart_items ci
+          JOIN cart c ON ci.cart_id = c.id
+          WHERE c.user_id = $1
+      )
+      SELECT
+          ap.*,
+          CASE
+              WHEN EXISTS (SELECT 1 FROM myCart mc WHERE mc.product_id = ap.id) THEN true
+              ELSE false
+          END AS in_cart
+      FROM allProducts ap
+    `,
+    [userID, word],
   );
 
   return products;

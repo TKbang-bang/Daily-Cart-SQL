@@ -30,7 +30,7 @@ export const gettingCategories = async () => {
 
 export const theCartThing = async (id) => {
   try {
-    const res = await api.post(`/products/cart/${id}`);
+    const res = await api.put(`/cart/aor/${id}`);
     if (res.status != 200) return { ok: false, message: res.data.message };
 
     return {
