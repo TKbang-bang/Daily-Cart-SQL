@@ -2,6 +2,9 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- ENUMS
 CREATE TYPE staff_roles AS ENUM ('admin', 'manager');
+CREATE TYPE order_status AS ENUM ('pending', 'processing', 'shipped', 'delivered', 'cancelled');
+CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed');
+CREATE TYPE payment_method AS ENUM ('stripe', 'paypal', 'cash');
 
 -- TABLES
 -- users
@@ -129,4 +132,49 @@ CREATE TABLE IF NOT EXISTS cart_items (
         ON DELETE CASCADE,
     CONSTRAINT cart_items_unique UNIQUE (cart_id, product_id),
     CONSTRAINT cart_items_quantity_check CHECK(quantity > 0)
+);
+
+-- ORDERS
+CREATE TABLE IF NOT EXISTS orders (
+    id BIGSERIAL PRIMARY KEY,
+    user_id uuid NOT NULL,
+    total NUMERIC(10, 2) NOT NULL,
+    status order_status NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
+);
+
+-- ORDER ITEMS
+CREATE TABLE IF NOT EXISTS order_items (
+    id BIGSERIAL PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity INTEGER NOT NULL,
+    price NUMERIC(10, 2) NOT NULL,
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (product_id)
+        REFERENCES products(id)
+        ON DELETE CASCADE,
+    CONSTRAINT order_items_unique UNIQUE (order_id, product_id),
+    CONSTRAINT order_items_quantity_check CHECK(quantity > 0)
+);
+
+-- PAYMENTS
+CREATE TABLE IF NOT EXISTS payments (
+    id BIGSERIAL PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    transaction_id TEXT NOT NULL,
+    method payment_method NOT NULL DEFAULT 'stripe',
+    amount NUMERIC(10, 2) NOT NULL,
+    status payment_status NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP,
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE CASCADE,
+    CONSTRAINT payments_amount_check CHECK(amount > 0)
 );

@@ -25,7 +25,7 @@ function Cart() {
         />
         <Route
           path="orders"
-          element={<CartProducts url="/cart/orders" current={false} />}
+          element={<CartProducts url="/orders" current={false} />}
         />
         <Route
           path="purchased"
