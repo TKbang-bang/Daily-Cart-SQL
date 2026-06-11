@@ -177,7 +177,7 @@ header {
 }
 
 .product {
-  height: 25rem;
+  height: fit-content;
   width: 18rem;
   background: #fff;
   border-radius: 0.3rem;
@@ -235,6 +235,47 @@ header {
     align-items: center;
     flex-direction: column;
     gap: 0.5rem;
+
+    .quantity {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      text-align: center;
+      font-size: 2rem;
+      padding: 0;
+      color: #3a3535;
+      font-weight: bold;
+      border: none;
+      outline: none;
+      background: none;
+    }
+
+    .btns_quantity {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+
+      button {
+        width: 100%;
+        height: 2rem;
+        border: none;
+        outline: none;
+        background: var(--blue);
+        color: #fff;
+        cursor: pointer;
+        font-size: 1rem;
+        border-radius: 0.3rem;
+        background-color: #00000050;
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+          background-color: #00000080;
+        }
+      }
+    }
 
     & button {
       width: 100%;

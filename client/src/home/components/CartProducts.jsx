@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 function CartProducts({ url, current }) {
   const [products, setProducts] = useState([]);
+  const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,7 +42,7 @@ function CartProducts({ url, current }) {
 
   const handleBuy = async (id) => {
     try {
-      const res = await buyProduct(id);
+      const res = await buyProduct(id, quantity);
       if (!res.ok) throw new Error(res.message);
 
       // return window.open(res.session.url, "_blank");
@@ -82,14 +83,39 @@ function CartProducts({ url, current }) {
 
             {current && (
               <div className="btns">
+                <input
+                  className="quantity"
+                  readOnly
+                  type="number"
+                  value={quantity}
+                />
+
+                <div className="btns_quantity">
+                  <button
+                    className="minus"
+                    onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                  >
+                    -
+                  </button>
+                  <button
+                    className="plus"
+                    onClick={() => quantity < 5 && setQuantity(quantity + 1)}
+                  >
+                    +
+                  </button>
+                </div>
                 <button
                   className="to_cart"
+                  onClick={() => handleBuy(product.id)}
+                >
+                  Buy now
+                </button>
+
+                <button
+                  className="now"
                   onClick={() => handleDelete(product.id)}
                 >
                   Remove from cart
-                </button>
-                <button className="now" onClick={() => handleBuy(product.id)}>
-                  Buy now
                 </button>
               </div>
             )}

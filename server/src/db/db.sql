@@ -2,9 +2,11 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- ENUMS
 CREATE TYPE staff_roles AS ENUM ('admin', 'manager');
-CREATE TYPE order_status AS ENUM ('pending', 'processing', 'shipped', 'delivered', 'cancelled');
+CREATE TYPE order_status AS ENUM ('pending', 'processing', 'packed', 'shipped', 'delivered', 'cancelled');
 CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed');
 CREATE TYPE payment_method AS ENUM ('stripe', 'paypal', 'cash');
+CREATE TYPE batch_status AS ENUM ('active', 'completed');
+CREATE TYPE fulfillment_stage AS ENUM ('processing', 'packed', 'shipped');
 
 -- TABLES
 -- users
@@ -177,4 +179,27 @@ CREATE TABLE IF NOT EXISTS payments (
         REFERENCES orders(id)
         ON DELETE CASCADE,
     CONSTRAINT payments_amount_check CHECK(amount > 0)
+);
+
+-- FULFILLMENT_BATCHES
+CREATE TABLE IF NOT EXISTS fulfillment_batches (
+    id BIGSERIAL PRIMARY KEY,
+    status batch_status NOT NULL DEFAULT 'active',
+    stage fulfillment_stage NOT NULL DEFAULT 'processing',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- FULFILLMENT_ITEMS
+CREATE TABLE fulfillment_items (
+    id BIGSERIAL PRIMARY KEY,
+    batch_id BIGINT NOT NULL,
+    order_id BIGINT NOT NULL,
+
+    FOREIGN KEY (batch_id)
+        REFERENCES fulfillment_batches(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE SET NULL,
+    CONSTRAINT fulfillment_items_unique
+        UNIQUE(batch_id, order_id)
 );

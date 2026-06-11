@@ -62,9 +62,11 @@ export const gettingCartCount = async () => {
   }
 };
 
-export const buyProduct = async (id) => {
+export const buyProduct = async (id, quantity) => {
   try {
-    const res = await api.post(`/payment/session/${id}`);
+    const res = await api.post(
+      `/payment/session?id=${id}&quantity=${quantity}`,
+    );
     if (res.status != 200) return { ok: false, message: res.data.message };
 
     return { ok: true, url: res.data.url };
