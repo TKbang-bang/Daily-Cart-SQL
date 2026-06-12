@@ -21,15 +21,15 @@ function Cart() {
       <Routes>
         <Route
           path="current"
-          element={<CartProducts url="/cart/current" current={true} />}
+          element={<CartProducts url="/cart/current" current="current" />}
         />
         <Route
           path="orders"
-          element={<CartProducts url="/orders" current={false} />}
+          element={<CartProducts url="/orders" current="orders" />}
         />
         <Route
           path="purchased"
-          element={<CartProducts url="/cart/purchased" current={false} />}
+          element={<CartProducts url="/cart/purchased" current="purchased" />}
         />
       </Routes>
     </section>

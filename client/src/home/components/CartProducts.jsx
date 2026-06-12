@@ -55,8 +55,8 @@ function CartProducts({ url, current }) {
   return (
     <section className="products">
       {products.length > 0 ? (
-        products.map((product) => (
-          <article className="product" key={product.id}>
+        products.map((product, index) => (
+          <article className="product" key={index + product.id}>
             <img
               src={`${import.meta.env.VITE_SERVER_URL}/products/${
                 product.image
@@ -67,21 +67,26 @@ function CartProducts({ url, current }) {
               <h3>{product.name}</h3>
               <p>{product.description}</p>
               <p className="_price">
-                {product.discount ? (
+                {product.discount_percent ? (
                   <>
-                    <span className="red">${product.price}</span>
+                    <span className="red">Price: ${product.price}</span>
                     <span className="price">
-                      ${product.price - product.discount}
+                      Discounted Price: $
+                      {product.price -
+                        (product.price * product.discount_percent) / 100}
                     </span>
                   </>
                 ) : (
-                  <span className="price">${product.price}</span>
+                  <span className="price">Price: ${product.price}</span>
                 )}{" "}
               </p>
-              <p>{product.stock} in stock</p>
+              {current != "orders" && <p>Stock: {product.stock}</p>}
+              {current == "orders" && <p>Quantity: {product.quantity}</p>}
+              {current == "orders" && <p>Total: {product.total}</p>}
+              {current == "orders" && <p>Status: {product.status}</p>}
             </div>
 
-            {current && (
+            {current == "current" && (
               <div className="btns">
                 <input
                   className="quantity"

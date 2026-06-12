@@ -36,7 +36,13 @@ export const createPaymentSessionService = async (
     // inserting items
     await client.query(
       `INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)`,
-      [order[0].id, productID, quantity, productByID[0].price],
+      [
+        order[0].id,
+        productID,
+        quantity,
+        productByID[0].price *
+          (1 - (productByID[0].discount_percent || 0) / 100),
+      ],
     );
 
     // starting the session
@@ -93,7 +99,7 @@ export const createPaymentSessionService = async (
         const { rows: newFulfillmentBatch } = await client.query(
           `INSERT INTO fulfillment_batches (status) VALUES ('active') RETURNING id`,
         );
-        bID = newFulfillmentBatch[0].id;
+        dbID = newFulfillmentBatch[0].id;
       } else {
         dbID = fulfillmentBatch[0].id;
       }
@@ -141,6 +147,16 @@ export const paymentSuccessService = async (orderID, userID) => {
     // updating payment status
     await pool.query(
       `UPDATE payments SET status = 'paid' WHERE order_id = $1`,
+      [orderID],
+    );
+
+    // updating product stock
+    await pool.query(
+      `UPDATE products SET stock = stock - (
+        SELECT quantity FROM order_items WHERE order_id = $1
+      ) WHERE id IN (
+        SELECT product_id FROM order_items WHERE order_id = $1
+      )`,
       [orderID],
     );
 
