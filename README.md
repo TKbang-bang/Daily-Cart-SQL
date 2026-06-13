@@ -1,66 +1,234 @@
-<body style="font-family: Arial, sans-serif; line-height: 1.6; background-color: #fafafa; color: #333; padding: 20px;">
-  <h1 style="text-align: center; font-size: 32px; margin-bottom: 20px;">Daily Cart - Online Store</h1>
+# 🛒 Daily Cart
 
-  <p style="margin-bottom: 20px;">
-    <strong>Daily Cart</strong> is an online store application divided into three main parts: the <strong>Client</strong>, the <strong>Admin Dashboard</strong>, and the <strong>Server</strong>. The platform allows customers to browse products,
-    add them to a shopping cart, and complete purchases, while authorized managers and admins can manage products, orders, and staff.
-  </p>
+A full-stack e-commerce platform that allows customers to browse products, manage shopping carts, and complete purchases online, while providing administrators and managers with powerful tools to manage products, orders, and store operations.
 
-  <h2 style="font-size: 24px; margin-top: 30px;">Client</h2>
-  <p style="margin-bottom: 10px;">This is the frontend used by customers to shop on the platform.</p>
-  <ul style="margin-left: 20px; margin-bottom: 20px;">
-    <li>Users can browse products.</li>
-    <li>Users can filter products by category or search by name.</li>
-    <li>Products can be added to the shopping cart.</li>
-    <li>Checkout and purchase flow is integrated.</li>
-  </ul>
+Built using a modern tech stack including **React (client-side UI)**, **Node.js + Express (server-side logic)**, **PostgreSQL (database management)** and **Stripe (payment processing)**.
 
-  <p><strong>Dependencies:</strong> axios, react-router-dom, sonner</p>
-  <p><strong>.env:</strong> <code>VITE_SERVER_URL</code> → Server base URL</p>
+---
 
-  <h2 style="font-size: 24px; margin-top: 30px;">Admin Dashboard</h2>
-  <p style="margin-bottom: 10px;">Used by store managers and admins to manage store operations.</p>
-  <ul style="margin-left: 20px; margin-bottom: 20px;">
-    <li>Create and update products.</li>
-    <li>View and manage customer orders.</li>
-    <li>View and manage store managers (restricted to admin only).</li>
-  </ul>
+## 🚀 Features
 
-  <p><strong>Dependencies:</strong> Same as Client</p>
-  <p><strong>.env:</strong> Same as Client</p>
+### Customer Features
 
-  <h2 style="font-size: 24px; margin-top: 30px;">Server</h2>
-  <p style="margin-bottom: 10px;">The backend handles authentication, protected routes, product and order management, and payment processing.</p>
+- 🛍 Browse products
+- 🔍 Search products by name
+- 🏷 Filter products by category
+- 🛒 Add products to cart
+- 💳 Secure checkout with Stripe
+- 📦 View order status
+- 🚪 Logout
 
-  <p>
-    Authentication uses <strong>JWT tokens and cookies</strong>. The <strong>access-token</strong> is used to validate user requests. If it expires, a new one can be generated using the <strong>refreshToken</strong> cookie.
-    If both are invalid, the user loses access and must log in again.
-  </p>
+### Management Features
 
-  <h3 style="font-size: 20px; margin-top: 20px;">Main Routes</h3>
-  <ul style="margin-left: 20px; margin-bottom: 20px;">
-    <li><code>/auth</code> → Signup / Login</li>
-    <li><code>/protected</code> → Requires session and authentication</li>
-    <li><code>/protected/users</code> → User management</li>
-    <li><code>/protected/products</code> → Product management</li>
-    <li><code>/protected/cart</code> → Cart actions</li>
-    <li><code>/protected/payment</code> → Payment session and Stripe handling</li>
-    <li><code>/protected/orders/private</code> → Order management</li>
-  </ul>
+- ➕ Create products
+- ✏️ Update products
+- 📋 View customer orders
+- 📦 Manage order statuses
+- 👥 Manage store managers (Admin only)
+- 🔐 Role-based access control
 
-  <h3 style="font-size: 20px; margin-top: 20px;">Dependencies</h3>
-  <p style="margin-bottom: 20px;">bcrypt, cookie-parser, cors, dotenv, express, jsonwebtoken, multer, pg, pg-hstore, sequelize, stripe</p>
+---
 
-  <h3 style="font-size: 20px; margin-top: 20px;">Environment Variables</h3>
-  <ul style="margin-left: 20px; margin-bottom: 40px;">
-    <li><code>DB_USER</code>, <code>DB_PASSWORD</code>, <code>DB_NAME</code>, <code>DB_HOST</code>, <code>DB_PORT</code></li>
-    <li><code>CLIENT_URL</code>, <code>ADMIN_URL</code></li>
-    <li><code>JWT_ACCESS_SECRET</code> → Secret for access token</li>
-    <li><code>JWT_REFRESH_SECRET</code> → Secret for refresh token</li>
-    <li><code>ADMIN_CODE</code> → Create or login as Admin</li>
-    <li><code>MANAGER_CODE</code> → Create or login as Manager</li>
-    <li><code>STRIPE_SECRET</code> → Stripe API secret key</li>
-  </ul>
+## 🧩 Tech Stack
 
-  <p style="text-align: center; font-style: italic;">Daily Cart © 2025</p>
-</body>
+### Frontend
+
+- React
+- Axios
+- React Router DOM
+- Sonner
+
+### Backend
+
+- Node.js
+- Express
+- PostgreSQL
+- JWT
+- Cookie Parser
+- BCrypt
+- Multer
+- Stripe
+- CORS
+- Dotenv
+
+### Database
+
+- PostgreSQL
+
+---
+
+## 🔑 Authentication & Security
+
+### Authentication
+
+The application uses **JWT-based authentication** with access and refresh tokens.
+
+- Access tokens authenticate user requests.
+- Refresh tokens are stored in HTTP-only cookies.
+- Expired access tokens are automatically renewed using refresh tokens.
+- Invalid tokens result in session expiration and require re-authentication.
+
+### Authorization
+
+Role-based permissions are implemented:
+
+- **Customer** → Shopping and order management.
+- **Manager** → Product and order management.
+- **Admin** → Full access, including manager administration.
+
+---
+
+## 💳 Payments
+
+Stripe is integrated to provide secure payment processing.
+
+Features include:
+
+- Checkout session creation
+- Payment validation
+- Order generation after successful payment
+- Secure Stripe API integration
+
+---
+
+## 🌳 Environment Variables
+
+### Client & Admin
+
+```env
+VITE_SERVER_URL=
+```
+
+| Variable          | Description                  |
+| ----------------- | ---------------------------- |
+| `VITE_SERVER_URL` | Base URL of the backend API. |
+
+### Server
+
+#### Server Configuration
+
+```env
+CLIENT_URL=
+ADMIN_URL=
+PORT=
+NODE_ENV=
+```
+
+| Variable     | Description                                              |
+| ------------ | -------------------------------------------------------- |
+| `CLIENT_URL` | URL of the customer-facing frontend application.         |
+| `ADMIN_URL`  | URL of the admin dashboard frontend.                     |
+| `PORT`       | Port where the server will run.                          |
+| `NODE_ENV`   | Application environment (`development` or `production`). |
+
+#### Database
+
+```env
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+DB_HOST=
+DB_PORT=
+```
+
+| Variable      | Description                   |
+| ------------- | ----------------------------- |
+| `DB_USER`     | PostgreSQL database username. |
+| `DB_PASSWORD` | PostgreSQL database password. |
+| `DB_NAME`     | Database name.                |
+| `DB_HOST`     | Database host address.        |
+| `DB_PORT`     | PostgreSQL port.              |
+
+#### JWT
+
+```env
+JWT_ACCESS_SECRET=
+JWT_REFRESH_SECRET=
+```
+
+| Variable             | Description                             |
+| -------------------- | --------------------------------------- |
+| `JWT_ACCESS_SECRET`  | Secret key used to sign access tokens.  |
+| `JWT_REFRESH_SECRET` | Secret key used to sign refresh tokens. |
+
+#### Roles
+
+```env
+ADMIN_CODE=
+MANAGER_CODE=
+```
+
+| Variable       | Description                                                     |
+| -------------- | --------------------------------------------------------------- |
+| `ADMIN_CODE`   | Secret code required to register or log in as an administrator. |
+| `MANAGER_CODE` | Secret code required to register or log in as a store manager.  |
+
+#### Stripe
+
+```env
+STRIPE_SECRET=
+```
+
+| Variable        | Description                                        |
+| --------------- | -------------------------------------------------- |
+| `STRIPE_SECRET` | Secret API key used for Stripe payment processing. |
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/TKbang-bang/daily-cart.git
+cd daily-cart-sql
+```
+
+### 2. Setup Client
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+### 3. Setup Admin Dashboard
+
+```bash
+cd admin
+npm install
+npm run dev
+```
+
+### 4. Setup Server
+
+```bash
+cd server
+npm install
+npm run dev
+```
+
+---
+
+## 👤 Author
+
+**Woodley TK**
+
+GitHub:
+https://github.com/TKbang-bang/
+
+---
+
+## 📌 Notes
+
+This project was designed to demonstrate a complete e-commerce workflow, including:
+
+- Authentication with JWT and refresh tokens
+- Role-based authorization
+- Product management
+- Shopping cart functionality
+- Stripe payment integration
+- Scalable backend architecture
+- PostgreSQL database management
+
+It is a backend-focused project that showcases real-world e-commerce concepts and application structure.

@@ -65,22 +65,26 @@ function CartProducts({ url, current }) {
             />
             <div className="info">
               <h3>{product.name}</h3>
-              <p>{product.description}</p>
-              <p className="_price">
-                {product.discount_percent ? (
-                  <>
-                    <span className="red">Price: ${product.price}</span>
-                    <span className="price">
-                      Discounted Price: $
-                      {product.price -
-                        (product.price * product.discount_percent) / 100}
-                    </span>
-                  </>
-                ) : (
-                  <span className="price">Price: ${product.price}</span>
-                )}{" "}
-              </p>
-              {current != "orders" && <p>Stock: {product.stock}</p>}
+              {current != "purchased" && <p>{product.description}</p>}
+              {current != "purchased" && (
+                <p className="_price">
+                  {product.discount_percent ? (
+                    <>
+                      <span className="red">Price: ${product.price}</span>
+                      <span className="price">
+                        Discounted Price: $
+                        {product.price -
+                          (product.price * product.discount_percent) / 100}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="price">Price: ${product.price}</span>
+                  )}{" "}
+                </p>
+              )}
+              {current != "orders" && current != "purchased" && (
+                <p>Stock: {product.stock}</p>
+              )}
               {current == "orders" && <p>Quantity: {product.quantity}</p>}
               {current == "orders" && <p>Total: {product.total}</p>}
               {current == "orders" && <p>Status: {product.status}</p>}
