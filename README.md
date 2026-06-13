@@ -180,7 +180,7 @@ STRIPE_SECRET=
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/TKbang-bang/daily-cart.git
+git clone https://github.com/TKbang-bang/Daily-Cart-SQL.git
 cd daily-cart-sql
 ```
 
