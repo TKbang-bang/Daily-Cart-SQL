@@ -21,12 +21,14 @@ function Orders({ url }) {
     getAllOrders();
   }, [url]);
 
-  const handleNext = async (orderId) => {
+  const handleNext = async (fulfillment_id) => {
     try {
-      const res = await updateOrder(orderId);
+      const res = await updateOrder(fulfillment_id);
       if (!res.ok) throw new Error(res.message);
 
-      setOrders(orders.filter((order) => order.id !== orderId));
+      setOrders(
+        orders.filter((order) => order.fulfillment_id !== fulfillment_id),
+      );
       return toast.success(res.message);
     } catch (error) {
       return toast.error(error.message);
@@ -38,21 +40,14 @@ function Orders({ url }) {
       {orders.length > 0 ? (
         <>
           {orders.map((order) => (
-            <article className="order" key={order.id}>
-              <img
-                src={`${import.meta.env.VITE_SERVER_URL}/products/${
-                  order.items[0].product.image
-                }`}
-                alt={order.name}
-              />
-
-              <h3>{order.items[0].product.name}</h3>
-              <h3>
-                {order.user.firstname} {order.user.lastname}
-              </h3>
-              <p>${order.total}</p>
-              <p>{order.status}</p>
-              <button onClick={() => handleNext(order.id)}>Next status</button>
+            <article className="order" key={order.fulfillment_id}>
+              <h3>ID: {order.fulfillment_id}</h3>
+              <h3>status: {order.fulfillment_status}</h3>
+              <h3>stage: {order.fulfillment_stage}</h3>
+              <h3>orders: {order.total_orders}</h3>
+              <button onClick={() => handleNext(order.fulfillment_id)}>
+                Next status
+              </button>
             </article>
           ))}
         </>

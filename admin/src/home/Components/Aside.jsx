@@ -62,7 +62,7 @@ function Aside() {
         </li>
 
         <li>
-          <NavLink to={"/orders/paid"}>
+          <NavLink to={"/orders/processing"}>
             <span>
               <OrdersIcon />
             </span>

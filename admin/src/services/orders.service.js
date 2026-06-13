@@ -14,9 +14,9 @@ export const gettingOrders = async (url) => {
   }
 };
 
-export const updateOrder = async (userId) => {
+export const updateOrder = async (fulfillment_id) => {
   try {
-    const res = await api.put(`/orders/private/${userId}`);
+    const res = await api.put(`/orders/${fulfillment_id}`);
     if (res.status != 200) return { ok: false, message: res.data.message };
 
     return { ok: true, message: res.data.message };

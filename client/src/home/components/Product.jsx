@@ -35,13 +35,17 @@ function Product({ product }) {
         <h3>{product.name}</h3>
         <p>{product.description}</p>
         <p className="_price">
-          {product.discount ? (
+          {product.discount_percent ? (
             <>
-              <span className="red">${product.price}</span>
-              <span className="price">${product.price - product.discount}</span>
+              <span className="red">Price: ${product.price}</span>
+              <span className="price">
+                Discounted Price: $
+                {product.price -
+                  (product.price * product.discount_percent) / 100}
+              </span>
             </>
           ) : (
-            <span className="price">${product.price}</span>
+            <span className="price">Price: ${product.price}</span>
           )}{" "}
         </p>
         <p>{product.stock} in stock</p>

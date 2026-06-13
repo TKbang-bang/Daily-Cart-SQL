@@ -213,8 +213,8 @@ header {
     & ._price {
       display: flex;
       justify-content: center;
-      align-items: center;
-      gap: 1rem;
+      align-items: flex-start;
+      flex-direction: column;
       opacity: 1;
 
       & .price {

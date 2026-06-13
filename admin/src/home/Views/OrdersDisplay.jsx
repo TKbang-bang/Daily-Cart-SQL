@@ -8,7 +8,11 @@ function OrdersDisplay() {
     <section>
       <ul className="orders_links">
         <li>
-          <NavLink to={"/orders/paid"}>Paid</NavLink>
+          <NavLink to={"/orders/processing"}>Processing</NavLink>
+        </li>
+
+        <li>
+          <NavLink to={"/orders/packed"}>Packed</NavLink>
         </li>
 
         <li>
@@ -16,11 +20,12 @@ function OrdersDisplay() {
         </li>
       </ul>
       <Routes>
-        <Route path="/paid" element={<Orders url={"/orders/private/paid"} />} />
         <Route
-          path="/shipped"
-          element={<Orders url={"/orders/private/shipped"} />}
+          path="/processing"
+          element={<Orders url={"/orders/processing"} />}
         />
+        <Route path="/packed" element={<Orders url={"/orders/packed"} />} />
+        <Route path="/shipped" element={<Orders url={"/orders/shipped"} />} />
       </Routes>
     </section>
   );
